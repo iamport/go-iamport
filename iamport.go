@@ -94,10 +94,13 @@ type Payment struct {
 	ImpUID        string `json:"imp_uid"`
 	MerchantUID   string `json:"merchant_uid"`
 	PayMethod     string `json:"pay_method"`
+	Channel       string `json:"channel"`
 	PGProvider    string `json:"pg_provider"`
 	PGTID         string `json:"pg_tid"`
+	PGID          string `json:"pg_id"`
 	ApplyNum      string `json:"apply_num"`
 	CardName      string `json:"card_name"`
+	CardNumber    string `json:"card_number"`
 	CardQuota     int    `json:"card_quota"`
 	VBankName     string `json:"vbank_name"`
 	VBankNum      string `json:"vbank_num"`
@@ -105,6 +108,7 @@ type Payment struct {
 	Name          string `json:"name"`
 	Amount        int64  `json:"amount"`
 	CancelAmount  int64  `json:"cancel_amount"`
+	Currency      string `json:"currency"`
 	BuyerName     string `json:"buyer_name"`
 	BuyerEmail    string `json:"buyer_email"`
 	BuyerTel      string `json:"buyer_tel"`
@@ -113,6 +117,7 @@ type Payment struct {
 	CustomData    string `json:"custom_data"`
 	UserAgent     string `json:"user_agent"`
 	Status        string `json:"status"`
+	StartedAt     int64  `json:"started_at"`
 	PaidAt        int64  `json:"paid_at"`
 	FailedAt      int64  `json:"failed_at"`
 	CanceledAt    int64  `json:"canceled_at"`

@@ -28,7 +28,7 @@ func TestGetByImpUID(t *testing.T) {
 	payment, err := GetByImpUID(auth, params)
 	assert.NoError(t, err)
 
-	checkPaymentImp375245484897(t, payment)
+	checkPaymentImp375245484897(t, payment.Response)
 }
 
 func TestGetByImpUIDs(t *testing.T) {
@@ -41,9 +41,9 @@ func TestGetByImpUIDs(t *testing.T) {
 	payments, err := GetByImpUIDs(auth, params)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 2, len(payments))
-	checkPaymentImp375245484897(t, payments[0])
-	checkPaymentImpUID619325647049(t, payments[1])
+	assert.Equal(t, 2, len(payments.Response))
+	checkPaymentImp375245484897(t, payments.Response[0])
+	checkPaymentImpUID619325647049(t, payments.Response[1])
 }
 
 func TestGetByMerchantUID(t *testing.T) {
@@ -56,7 +56,7 @@ func TestGetByMerchantUID(t *testing.T) {
 	payment, err := GetByMerchantUID(auth, params)
 	assert.NoError(t, err)
 
-	checkPaymentImp375245484897(t, payment)
+	checkPaymentImp375245484897(t, payment.Response)
 }
 
 func TestGetByMerchantUIDWithCorrectStatus(t *testing.T) {
@@ -96,7 +96,7 @@ func TestGetByMerchantUIDs(t *testing.T) {
 	payment, err := GetByMerchantUIDs(auth, params)
 	assert.NoError(t, err)
 
-	checkPaymentImp375245484897(t, payment.List[0])
+	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithCorrectStatus(t *testing.T) {
@@ -110,7 +110,7 @@ func TestGetByMerchantUIDsWithCorrectStatus(t *testing.T) {
 	payment, err := GetByMerchantUIDs(auth, params)
 	assert.NoError(t, err)
 
-	checkPaymentImp375245484897(t, payment.List[0])
+	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithInorrectStatus(t *testing.T) {
@@ -136,7 +136,7 @@ func TestGetByMerchantUIDsWithCorrectPage(t *testing.T) {
 
 	payment, err := GetByMerchantUIDs(auth, params)
 	assert.NoError(t, err)
-	checkPaymentImp375245484897(t, payment.List[0])
+	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithIncorrectPage(t *testing.T) {
@@ -163,7 +163,7 @@ func TestGetByMerchantUIDsWithStatusAndPage(t *testing.T) {
 
 	payment, err := GetByMerchantUIDs(auth, params)
 	assert.NoError(t, err)
-	checkPaymentImp375245484897(t, payment.List[0])
+	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithStatusAndPageAndSorting(t *testing.T) {
@@ -178,7 +178,7 @@ func TestGetByMerchantUIDsWithStatusAndPageAndSorting(t *testing.T) {
 
 	payment, err := GetByMerchantUIDs(auth, params)
 	assert.NoError(t, err)
-	checkPaymentImp375245484897(t, payment.List[0])
+	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByStatus(t *testing.T) {
@@ -190,7 +190,7 @@ func TestGetByStatus(t *testing.T) {
 
 	payment, err := GetByStatus(auth, params)
 	assert.NoError(t, err)
-	assert.Equal(t, 20, len(payment.List))
+	assert.Equal(t, 20, len(payment.Response.List))
 }
 
 func TestGetByStatusWithLimit(t *testing.T) {
@@ -203,7 +203,7 @@ func TestGetByStatusWithLimit(t *testing.T) {
 
 	payment, err := GetByStatus(auth, params)
 	assert.NoError(t, err)
-	assert.Equal(t, 10, len(payment.List))
+	assert.Equal(t, 10, len(payment.Response.List))
 }
 
 func TestGetByStatusWithSpecificStatus(t *testing.T) {
@@ -216,7 +216,7 @@ func TestGetByStatusWithSpecificStatus(t *testing.T) {
 
 	payment, err := GetByStatus(auth, params)
 	assert.NoError(t, err)
-	for _, pay := range payment.GetList() {
+	for _, pay := range payment.Response.GetList() {
 		assert.Equal(t, "paid", pay.Status)
 	}
 }
@@ -233,7 +233,7 @@ func TestGetByStatusWithDate(t *testing.T) {
 
 	payment, err := GetByStatus(auth, params)
 	assert.NoError(t, err)
-	for _, pay := range payment.GetList() {
+	for _, pay := range payment.Response.GetList() {
 		assert.True(t, time.Unix(int64(pay.PaidAt), 0).Before(time.Date(2020, 9, 2, 0, 0, 0, 0, time.UTC)))
 		assert.True(t, time.Unix(int64(pay.PaidAt), 0).After(time.Date(2020, 9, 1, 0, 0, 0, 0, time.UTC)))
 	}
@@ -253,7 +253,7 @@ func TestGetByStatusWithSortPaidTime(t *testing.T) {
 	payment, err := GetByStatus(auth, params)
 	assert.NoError(t, err)
 	paidTime := time.Now()
-	for _, pay := range payment.GetList() {
+	for _, pay := range payment.Response.GetList() {
 		current := time.Unix(int64(pay.PaidAt), 0)
 		assert.True(t, current.Before(paidTime))
 		paidTime = current
@@ -270,7 +270,7 @@ func xTestGetBalanceByImpUID(t *testing.T) {
 
 	payment, err := GetBalanceByImpUID(auth, params)
 	assert.NoError(t, err)
-	assert.Equal(t, 123, payment.Amount)
+	assert.Equal(t, 123, payment.Response.Amount)
 }
 
 func checkPaymentImp375245484897(t *testing.T, p *payment.Payment) {

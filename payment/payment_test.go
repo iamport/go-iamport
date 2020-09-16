@@ -8,7 +8,7 @@ import (
 
 	"github.com/joowonyun/interface/build/go/payment"
 
-	"github.com/mgsmurf/go-iamport/authenticate"
+	"github.com/joowonyun/go-iamport/authenticate"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/joowonyun/interface/build/go/authenticate"
-	"github.com/mgsmurf/go-iamport/util"
+	"github.com/joowonyun/go-iamport/util"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

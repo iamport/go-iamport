@@ -1,8 +1,11 @@
 package util
 
 import (
+	"bytes"
 	"errors"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -11,9 +14,68 @@ const (
 	ErrStatusUnauthorized = "iamport: unauthorized"
 	ErrStatusNotFound     = "iamport: invalid imp_uid"
 	ErrUnknown            = "iamport: unknown error"
+
+	HeaderContentType     = "Content-Type"
+	HeaderContentTypeForm = "application/x-www-form-urlencoded"
+	HeaderAuthorization   = "Authorization"
+
+	GET  = "GET"
+	POST = "POST"
 )
 
-func ErrorHandler(res *http.Response) error {
+func CallGet(client *http.Client, token string, url string) ([]byte, error) {
+	req, err := http.NewRequest(GET, url, nil)
+	if err != nil {
+		return []byte{}, err
+	}
+	req.Header.Set(HeaderAuthorization, token)
+
+	res, err := client.Do(req)
+	err = errorHandler(res)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	resBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return resBody, nil
+}
+
+func CallPostForm(client *http.Client, token string, url string, form url.Values) ([]byte, error) {
+	req, err := http.NewRequest(POST, url, bytes.NewBufferString(form.Encode()))
+	if err != nil {
+		return []byte{}, err
+	}
+	req.Header.Set(HeaderContentType, HeaderContentTypeForm)
+	req.Header.Set(HeaderAuthorization, token)
+
+	res, err := client.Do(req)
+	err = errorHandler(res)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	resBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return resBody, nil
+}
+
+func GetQueryPrefix(isFirst *bool) string {
+	if *isFirst {
+		*isFirst = false
+		return "?"
+	} else {
+		return "&"
+	}
+}
+
+func errorHandler(res *http.Response) error {
 	switch res.StatusCode {
 	case http.StatusOK:
 		return nil

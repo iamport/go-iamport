@@ -7,16 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	BaseURL       = "https://api.iamport.kr"
-	RestApiKey    = "imp_apikey"
-	RestApiSecret = "ekKoeW8RyKuT0zgaZsUtXXTLQ4AhPFW3ZGseDA6bkA5lamv9OqDMnxyeB9wqOsuO9W3Mx9YSJ4dTqJ3f"
-)
-
 func TestNewAuthenticate(t *testing.T) {
 	cli := &http.Client{}
 
-	auth, err := NewAuthenticate(BaseURL, cli, "", RestApiSecret)
+	auth, err := NewAuthenticate("", cli, RestApiKey, RestApiSecret)
+	assert.EqualError(t, err, ErrRestAPIURLMissing)
+	assert.Nil(t, auth)
+
+	auth, err = NewAuthenticate(BaseURL, cli, "", RestApiSecret)
 	assert.EqualError(t, err, ErrRestAPIKeyMissing)
 	assert.Nil(t, auth)
 
@@ -29,10 +27,7 @@ func TestNewAuthenticate(t *testing.T) {
 }
 
 func TestGetToken(t *testing.T) {
-	cli := &http.Client{}
-
-	auth, err := NewAuthenticate(BaseURL, cli, RestApiKey, RestApiSecret)
-	assert.NoError(t, err)
+	auth := GetMockBaseAuthenticate()
 
 	token, err := auth.GetToken()
 	assert.NoError(t, err)
@@ -40,10 +35,7 @@ func TestGetToken(t *testing.T) {
 }
 
 func TestBeforeExpiredGetTokenMustbeSameToken(t *testing.T) {
-	cli := &http.Client{}
-
-	auth, err := NewAuthenticate(BaseURL, cli, RestApiKey, RestApiSecret)
-	assert.NoError(t, err)
+	auth := GetMockBaseAuthenticate()
 
 	token, err := auth.GetToken()
 	assert.NoError(t, err)

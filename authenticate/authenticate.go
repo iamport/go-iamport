@@ -2,7 +2,6 @@ package authenticate
 
 import (
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -19,8 +18,9 @@ const (
 	IMPKey    = "imp_key"
 	IMPSecret = "imp_secret"
 
+	ErrRestAPIURLMissing    = "iamport: REST API URL is missing"
 	ErrRestAPIKeyMissing    = "iamport: REST API Key is missing"
-	ErrRestAPISecretMissing = "iamport:  REST API Secret is missing"
+	ErrRestAPISecretMissing = "iamport: REST API Secret is missing"
 )
 
 type Authenticate struct {
@@ -34,6 +34,10 @@ type Authenticate struct {
 // NewAuthenticate 는 api url, http.Client, rest api key, rest api seceret을 파라미터로 받아
 // rest api token을 발급받아 authenticate 모듈을 return 해준다.
 func NewAuthenticate(apiURL string, cli *http.Client, restAPIKey string, restAPISecret string) (*Authenticate, error) {
+	if apiURL == "" {
+		return nil, errors.New(ErrRestAPIURLMissing)
+	}
+
 	if restAPIKey == "" {
 		return nil, errors.New(ErrRestAPIKeyMissing)
 	}
@@ -80,23 +84,13 @@ func (a *Authenticate) RequestToken() error {
 	urls := []string{a.APIUrl, URLGetToken}
 	urlGetToken := strings.Join(urls, "")
 
-	res, err := a.Client.PostForm(urlGetToken, a.RestAPIKeyAndSecret)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	err = util.ErrorHandler(res)
-	if err != nil {
-		return err
-	}
-
-	resBody, err := ioutil.ReadAll(res.Body)
+	res, err := util.CallPostForm(a.Client, "", urlGetToken, a.RestAPIKeyAndSecret)
 	if err != nil {
 		return err
 	}
 
 	tokenRes := authenticate.TokenResponse{}
-	err = protojson.Unmarshal(resBody, &tokenRes)
+	err = protojson.Unmarshal(res, &tokenRes)
 	if err != nil {
 		return err
 	}

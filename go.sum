@@ -34,6 +34,10 @@ github.com/joowonyun/interface v0.0.0-20200914014840-68db2f946c7c h1:SSR0IgG5JrL
 github.com/joowonyun/interface v0.0.0-20200914053752-e4a8da98b82c h1:oJATZFvQmy2PRvmRUaRg4LwENQatx1XL9toXWHb629Q=
 github.com/joowonyun/interface v0.0.0-20200914053752-e4a8da98b82c/go.mod h1:u6g8gQTJswC3kQZs3FMIegkN6t60chu/m5ePe45YD/A=
 github.com/joowonyun/interface v0.0.0-20200914084652-970b1564f851 h1:pUNuQYuLejS0H4eV9zH3O7QqwDmIdD6DZAxi8mld1MU=
+github.com/joowonyun/interface v0.0.0-20200915073909-73718b1ee451 h1:+HQXUYI8YgJbZIjA9rDcmr5iUvs647ra2d5bslGWDzk=
+github.com/joowonyun/interface v0.0.0-20200915073909-73718b1ee451/go.mod h1:u6g8gQTJswC3kQZs3FMIegkN6t60chu/m5ePe45YD/A=
+github.com/joowonyun/interface v0.0.0-20200915093825-0b4ad2c06c73 h1:GG0IZGYb3P64wdc8hENkSJzil4lpmgNcoUahRrF1oRg=
+github.com/joowonyun/interface v0.0.0-20200915093825-0b4ad2c06c73/go.mod h1:u6g8gQTJswC3kQZs3FMIegkN6t60chu/m5ePe45YD/A=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=

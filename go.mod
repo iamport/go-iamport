@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/joowonyun/interface v0.0.0-20200914053752-e4a8da98b82c
+	github.com/joowonyun/interface v0.0.0-20200915093825-0b4ad2c06c73
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
 	golang.org/x/sys v0.0.0-20200909081042-eff7692f9009 // indirect

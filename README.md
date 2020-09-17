@@ -5,11 +5,14 @@ https://api.iamport.kr
 
 ## 설치
 
-    $ go get github.com/mgsmurf/go-iamport
+    $ go get github.com/joowonyun/go-iamport
 
 ## 예제
-    client := &http.Client{} // 상황에 맞는 클라이언트 사용
-    iam := iamport.NewClient("<your_api_key>", "<your_api_secret>", client)
+    iam, err := iamport.NewIamport("https://api.iamport.kr", "<your_api_key>", "<your_api_secret>")
+    if err != nil {
+      return err
+    }
+
     pay, err := iam.GetPaymentImpUID("<some imp_uid>")
     if err != nil {
       fmt.Println(err)
@@ -19,26 +22,24 @@ https://api.iamport.kr
     fmt.Println(pay.Amount)
     fmt.Println(pay.MerchantUID)
 
-### App Engine
-    client := urlfetch.Client(ctx)
-    iam := iamport.NewClient("<your_api_key>", "<your_api_secret>", client)
-    ...
-
 ## 구현되어있는 기능 - https://api.iamport.kr
 
 - authenticate
   - POST /users/getToken
 - payments  
   - GET /payments/{imp_uid}
+  - GET /payments
   - GET /payments/find/{merchant_uid}
+  - GET /payments/findAll/{merchant_uid}/{payment_status}
   - GET /payments/status/{payment_status}
+  - GET /payments/{imp_uid}/balance
+
+### TODO
+- payments
   - POST /payments/cancel
 - payments.validation
   - POST /payments/prepare
   - GET /payments/prepare/merchant_uid
-
-### 미구현
-
 - subscribe
   - POST /subscribe/payments/ontime
   - POST /subscribe/payments/again

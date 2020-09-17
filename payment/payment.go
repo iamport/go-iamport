@@ -163,6 +163,9 @@ func GetByMerchantUIDs(auth *authenticate.Authenticate, params *payment.Payments
 // 검색기간은 최대 90일까지이며 to파라메터의 기본값은 현재 unix timestamp이고 from파라메터의 기본값은 to파라메터 기준으로 90일 전입니다. 때문에, from/to 파라메터가 없이 호출되면 현재 시점 기준으로 최근 90일 구간에 대한 데이터를 검색하게 됩니다.
 // from, to 파라메터를 지정하여 90일 단위로 과거 데이터 조회는 가능합니다.
 func GetByStatus(auth *authenticate.Authenticate, params *payment.PaymentStatusRequest) (*payment.PaymentStatusResponse, error) {
+	if params.Status == "" {
+		params.Status = util.StatusAll
+	}
 	urls := []string{auth.APIUrl, URLPayments, URLStatus, "/", params.Status}
 
 	isFirstQuery := true
@@ -231,4 +234,4 @@ func GetBalanceByImpUID(auth *authenticate.Authenticate, params *payment.Payment
 	return &paymentRes, nil
 }
 
-// TODO cancle, prefare
+// TODO cancle, prepare

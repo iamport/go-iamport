@@ -75,6 +75,22 @@ func GetQueryPrefix(isFirst *bool) string {
 	}
 }
 
+func ValidateStatusParameter(src string) bool {
+	if src == "" || src == StatusReady || src == StatusAll || src == StatusPaid || src == StatusFailed || src == StatusCanceled {
+		return true
+	}
+
+	return false
+}
+
+func ValidateSortParameter(src string) bool {
+	if src == "" || src == SortDESCStarted || src == SortASCStarted || src == SortDESCPaid || src == SortASCPaid || src == SortASCUpdated || src == SortDESCUpdated {
+		return true
+	}
+
+	return false
+}
+
 func errorHandler(res *http.Response) error {
 	switch res.StatusCode {
 	case http.StatusOK:

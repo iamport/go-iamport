@@ -1,6 +1,8 @@
 package iamport
 
 import (
+	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -199,4 +201,54 @@ func xTestGetPaymentBalanceImpUID(t *testing.T) {
 	payment, err := iamport.GetPaymentBalanceImpUID("imp_088621754304")
 	assert.NoError(t, err)
 	assert.NotNil(t, payment)
+}
+
+func TestPreparePayment(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
+	var merchantBytes strings.Builder
+	for i := 0; i < 20; i++ {
+		merchantBytes.WriteRune(chars[rand.Intn(len(chars))])
+	}
+
+	merchantUID := merchantBytes.String()
+	amount := rand.Intn(10000)
+
+	payment, err := iamport.PreparePayment(merchantUID, float64(amount))
+	assert.NoError(t, err)
+	assert.NotNil(t, payment)
+
+	res, err := iamport.GetPreparePayment(merchantUID)
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+}
+
+func TestPreparePaymentWithoutMerchantUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	payment, err := iamport.PreparePayment("", float64(1))
+	assert.Error(t, err)
+	assert.Nil(t, payment)
+}
+
+func TestPreparePaymentWithInvalidAmount(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	payment, err := iamport.PreparePayment("abc", float64(-1))
+	assert.Error(t, err)
+	assert.Nil(t, payment)
+}
+
+func TestGetPreparePaymentWithoutMerchantUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	payment, err := iamport.GetPreparePayment("")
+	assert.Error(t, err)
+	assert.Nil(t, payment)
 }

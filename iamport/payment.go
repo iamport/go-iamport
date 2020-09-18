@@ -203,3 +203,92 @@ func (iamport *Iamport) GetPaymentBalanceImpUID(iuid string) (*TypePayment.Payme
 
 	return res.Response, nil
 }
+
+// CancelPaymentImpUID imp_uid로 결제 취소하기
+//
+// POST /payments/cancel
+func (iamport *Iamport) CancelPaymentImpUID(iuid string, merchantUID string, amount float64, taxFree float64, checkSum float64, reason string, refundHolder string, refundBank string, refundAccount string) (*TypePayment.Payment, error) {
+	if iuid == "" && merchantUID == "" {
+		return nil, errors.New(ErrMustExistImpUIDorMerchantUID)
+	}
+
+	if amount < 0 {
+		return nil, errors.New(ErrInvalidAmount)
+	}
+
+	req := &TypePayment.PaymentCancleRequest{
+		ImpUid:        iuid,
+		MerchantUid:   merchantUID,
+		Amount:        amount,
+		TaxFree:       taxFree,
+		Checksum:      checkSum,
+		Reason:        reason,
+		RefundHolder:  refundHolder,
+		RefundBank:    refundBank,
+		RefundAccount: refundAccount,
+	}
+
+	res, err := payment.Cancle(iamport.Authenticate, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Code != util.CodeOK {
+		return nil, errors.New(res.Message)
+	}
+
+	return res.Response, nil
+}
+
+// PreparePayment 결제 정보 사전 등록하기
+//
+// POST /payments/prepare
+func (iamport *Iamport) PreparePayment(merchantUID string, amount float64) (*TypePayment.Prepare, error) {
+	if merchantUID == "" {
+		return nil, errors.New(ErrMustExistMerchantUID)
+	}
+
+	if amount < 0 {
+		return nil, errors.New(ErrInvalidAmount)
+	}
+
+	req := &TypePayment.PaymentPrepareRequest{
+		MerchantUid: merchantUID,
+		Amount:      amount,
+	}
+
+	res, err := payment.Prepare(iamport.Authenticate, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Code != util.CodeOK {
+		return nil, errors.New(res.Message)
+	}
+
+	return res.Response, nil
+}
+
+// GetPreparePayment 사전 등록된 결제 정보 보기
+//
+// GET /payments/prepare/{merchant_uid}
+func (iamport *Iamport) GetPreparePayment(merchantUID string) (*TypePayment.Prepare, error) {
+	if merchantUID == "" {
+		return nil, errors.New(ErrMustExistMerchantUID)
+	}
+
+	req := &TypePayment.PaymentPrepareRequest{
+		MerchantUid: merchantUID,
+	}
+
+	res, err := payment.GetPrepareByMerchantUID(iamport.Authenticate, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Code != util.CodeOK {
+		return nil, errors.New(res.Message)
+	}
+
+	return res.Response, nil
+}

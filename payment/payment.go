@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -19,6 +20,7 @@ const (
 	URLBalance  = "/balance"
 	URLStatus   = "/status"
 	URLCancle   = "/cancle"
+	URLPrepare  = "/prepare"
 
 	URLParamSorting = "sorting="
 	URLParamPage    = "page="
@@ -26,6 +28,16 @@ const (
 	URLParamFrom    = "from="
 	URLParamTo      = "to="
 	URLParamImpUids = "imp_uid[]="
+
+	ImpUID        = "imp_uid"
+	MerchantUID   = "merchant_uid"
+	Amount        = "amount"
+	TaxFree       = "tax_free"
+	Checksum      = "checksum"
+	Reason        = "reason"
+	RefundHolder  = "refund_holder"
+	RefundBank    = "refund_bank"
+	RefundAccount = "refund_account"
 )
 
 // GetByImpUID - GET /payments/{imp_uid}
@@ -232,6 +244,116 @@ func GetBalanceByImpUID(auth *authenticate.Authenticate, params *payment.Payment
 	}
 
 	return &paymentRes, nil
+}
+
+// Cancle - POST /payments/cancel
+// 승인된 결제를 취소합니다.
+// 신용카드/실시간계좌이체/휴대폰소액결제의 경우 즉시 취소처리가 이뤄지게 되며, 가상계좌의 경우는 환불받으실 계좌정보를 같이 전달해주시면 환불정보가 PG사에 등록되어 익영업일에 처리됩니다.(가상계좌 환불관련 특약계약 필요)
+func Cancle(auth *authenticate.Authenticate, params *payment.PaymentCancleRequest) (*payment.PaymentCancleResponse, error) {
+	urls := []string{auth.APIUrl, URLPayments, URLCancle}
+	urlCancle := strings.Join(urls, "")
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	form := url.Values{}
+	if params.ImpUid != "" {
+		form.Set(ImpUID, params.ImpUid)
+	}
+	if params.MerchantUid != "" {
+		form.Set(MerchantUID, params.MerchantUid)
+	}
+	if params.Amount != 0 {
+		form.Set(Amount, strconv.FormatFloat(params.Amount, 'f', -1, 64))
+	}
+	if params.TaxFree != 0 {
+		form.Set(TaxFree, strconv.FormatFloat(params.TaxFree, 'f', -1, 64))
+	}
+	if params.Checksum != 0 {
+		form.Set(Checksum, strconv.FormatFloat(params.Checksum, 'f', -1, 64))
+	}
+	if params.Reason != "" {
+		form.Set(Reason, params.Reason)
+	}
+	if params.RefundHolder != "" {
+		form.Set(RefundHolder, params.RefundHolder)
+	}
+	if params.RefundBank != "" {
+		form.Set(RefundBank, params.RefundBank)
+	}
+	if params.RefundAccount != "" {
+		form.Set(RefundAccount, params.RefundAccount)
+	}
+
+	res, err := util.CallPostForm(auth.Client, token, urlCancle, form)
+	if err != nil {
+		return nil, err
+	}
+
+	cancleRes := payment.PaymentCancleResponse{}
+	err = protojson.Unmarshal(res, &cancleRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &cancleRes, nil
+}
+
+// Prepare - POST /payments/prepare
+// (아임포트 javascript사용)인증방식의 결제를 진행할 때 결제금액 위변조시 결제진행자체를 block하기 위해 결제예정금액을 사전등록하는 기능입니다.
+// 이 API를 통해 사전등록된 가맹점 주문번호(merchant_uid)에 대해, IMP.request_pay()에 전달된 merchant_uid가 일치하는 주문의 결제금액이 다른 경우 PG사 결제창 호출이 중단됩니다.
+func Prepare(auth *authenticate.Authenticate, params *payment.PaymentPrepareRequest) (*payment.PaymentPrepareResponse, error) {
+	urls := []string{auth.APIUrl, URLPayments, URLPrepare}
+	urlPrepare := strings.Join(urls, "")
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	form := url.Values{}
+	form.Set(MerchantUID, params.MerchantUid)
+	form.Set(Amount, strconv.FormatFloat(params.Amount, 'f', -1, 64))
+
+	res, err := util.CallPostForm(auth.Client, token, urlPrepare, form)
+	if err != nil {
+		return nil, err
+	}
+
+	prepareRes := payment.PaymentPrepareResponse{}
+	err = protojson.Unmarshal(res, &prepareRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &prepareRes, nil
+}
+
+// GetPrepareByMerchantUID - GET /payments/prepare/{merchant_uid}
+// /payments/prepare로 이미 등록되어있는 사전등록 결제정보를 조회합니다
+func GetPrepareByMerchantUID(auth *authenticate.Authenticate, params *payment.PaymentPrepareRequest) (*payment.PaymentPrepareResponse, error) {
+	urls := []string{auth.APIUrl, URLPayments, URLPrepare, "/", params.MerchantUid}
+	urlPrepare := strings.Join(urls, "")
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := util.CallGet(auth.Client, token, urlPrepare)
+	if err != nil {
+		return nil, err
+	}
+
+	prepareRes := payment.PaymentPrepareResponse{}
+	err = protojson.Unmarshal(res, &prepareRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &prepareRes, nil
 }
 
 // TODO cancle, prepare

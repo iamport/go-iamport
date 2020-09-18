@@ -1,6 +1,8 @@
 package payment
 
 import (
+	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -271,6 +273,39 @@ func xTestGetBalanceByImpUID(t *testing.T) {
 	payment, err := GetBalanceByImpUID(auth, params)
 	assert.NoError(t, err)
 	assert.Equal(t, 123, payment.Response.Amount)
+}
+
+func TestPrepare(t *testing.T) {
+	auth := authenticate.GetMockBaseAuthenticate()
+
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
+	var merchantBytes strings.Builder
+	for i := 0; i < 20; i++ {
+		merchantBytes.WriteRune(chars[rand.Intn(len(chars))])
+	}
+
+	merchantUID := merchantBytes.String()
+	amount := rand.Intn(10000)
+
+	params := &payment.PaymentPrepareRequest{
+		MerchantUid: merchantUID,
+		Amount:      float64(amount),
+	}
+
+	res, err := Prepare(auth, params)
+	assert.NoError(t, err)
+	assert.Equal(t, merchantUID, res.Response.MerchantUid)
+	assert.Equal(t, amount, int(res.Response.Amount))
+
+	params = &payment.PaymentPrepareRequest{
+		MerchantUid: merchantUID,
+	}
+
+	res, err = GetPrepareByMerchantUID(auth, params)
+	assert.NoError(t, err)
+	assert.Equal(t, merchantUID, res.Response.MerchantUid)
+	assert.Equal(t, amount, int(res.Response.Amount))
 }
 
 func checkPaymentImp375245484897(t *testing.T, p *payment.Payment) {

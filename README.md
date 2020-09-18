@@ -33,13 +33,12 @@ https://api.iamport.kr
   - GET /payments/findAll/{merchant_uid}/{payment_status}
   - GET /payments/status/{payment_status}
   - GET /payments/{imp_uid}/balance
-
-### TODO
-- payments
   - POST /payments/cancel
 - payments.validation
   - POST /payments/prepare
   - GET /payments/prepare/merchant_uid
+
+### TODO
 - subscribe
   - POST /subscribe/payments/ontime
   - POST /subscribe/payments/again

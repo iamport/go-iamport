@@ -21,36 +21,27 @@ const (
 
 	GET  = "GET"
 	POST = "POST"
+	PUT  = "PUT"
 )
 
-func CallGet(client *http.Client, token string, url string) ([]byte, error) {
-	req, err := http.NewRequest(GET, url, nil)
+type Method string
+
+func Call(client *http.Client, token string, url string, method Method, form *url.Values) ([]byte, error) {
+	var req *http.Request
+	var err error
+	if form != nil {
+		req, err = http.NewRequest(string(method), url, bytes.NewBufferString(form.Encode()))
+	} else {
+		req, err = http.NewRequest(string(method), url, nil)
+	}
 	if err != nil {
 		return []byte{}, err
 	}
+
 	req.Header.Set(HeaderAuthorization, token)
-
-	res, err := client.Do(req)
-	err = errorHandler(res)
-	if err != nil {
-		return []byte{}, err
+	if form != nil {
+		req.Header.Set(HeaderContentType, HeaderContentTypeForm)
 	}
-
-	resBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	return resBody, nil
-}
-
-func CallPostForm(client *http.Client, token string, url string, form url.Values) ([]byte, error) {
-	req, err := http.NewRequest(POST, url, bytes.NewBufferString(form.Encode()))
-	if err != nil {
-		return []byte{}, err
-	}
-	req.Header.Set(HeaderContentType, HeaderContentTypeForm)
-	req.Header.Set(HeaderAuthorization, token)
 
 	res, err := client.Do(req)
 	err = errorHandler(res)

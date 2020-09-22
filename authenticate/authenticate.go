@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/joowonyun/interface/build/go/authenticate"
 	"github.com/joowonyun/go-iamport/util"
+	"github.com/joowonyun/interface/build/go/authenticate"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -84,7 +84,7 @@ func (a *Authenticate) RequestToken() error {
 	urls := []string{a.APIUrl, URLGetToken}
 	urlGetToken := strings.Join(urls, "")
 
-	res, err := util.CallPostForm(a.Client, "", urlGetToken, a.RestAPIKeyAndSecret)
+	res, err := util.Call(a.Client, "", urlGetToken, util.POST, &a.RestAPIKeyAndSecret)
 	if err != nil {
 		return err
 	}

@@ -26,10 +26,8 @@ github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMyw
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.0 h1:/QaMHBdZ26BB3SSst0Iwl10Epc+xhTquomWX0oZEB6w=
 github.com/google/go-cmp v0.5.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/joowonyun/interface v0.0.0-20200918085824-288aef329769 h1:WRc/pZ1iHLKYwFZbUGQ1DX330WsLywGiC2PC9Xq7hXE=
-github.com/joowonyun/interface v0.0.0-20200918085824-288aef329769/go.mod h1:u6g8gQTJswC3kQZs3FMIegkN6t60chu/m5ePe45YD/A=
-github.com/joowonyun/interface v0.0.0-20200918093224-76ccf6089569 h1:Z1q0o88kFCK33lBX/M1Ku6cC9zNVufwwgbia6cmeeTg=
-github.com/joowonyun/interface v0.0.0-20200918093224-76ccf6089569/go.mod h1:u6g8gQTJswC3kQZs3FMIegkN6t60chu/m5ePe45YD/A=
+github.com/iamport/interface v0.0.0-20200922063903-84e9458a69c5 h1:+0JDNjBm04plL/KRzMG4g3W+7Jjb6lI6OrtblqOCZqI=
+github.com/iamport/interface v0.0.0-20200922063903-84e9458a69c5/go.mod h1:g6bajH4wRsZAhfMlNz8EAeWqTRqQLp18K58pGBWR5wA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=

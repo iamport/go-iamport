@@ -8,9 +8,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/joowonyun/interface/build/go/payment"
+	"github.com/iamport/interface/build/go/payment"
 
-	"github.com/joowonyun/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/authenticate"
 )
 
 const (

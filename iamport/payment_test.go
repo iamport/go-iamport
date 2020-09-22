@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joowonyun/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/authenticate"
 	"github.com/stretchr/testify/assert"
 )
 

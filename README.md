@@ -5,7 +5,11 @@ https://api.iamport.kr
 
 ## 설치
 
-    $ go get github.com/joowonyun/go-iamport
+    $ go get github.com/iamport/go-iamport
+
+## 테스트
+
+    $ go test ./... -v
 
 ## 예제
     iam, err := iamport.NewIamport("https://api.iamport.kr", "<your_api_key>", "<your_api_secret>")
@@ -37,6 +41,9 @@ https://api.iamport.kr
 - payments.validation
   - POST /payments/prepare
   - GET /payments/prepare/merchant_uid
+- escrows
+  - POST /escrows/logis/{imp_uid}
+  - PUT /escrows/logis/{imp_uid}
 
 ### TODO
 - subscribe
@@ -48,3 +55,13 @@ https://api.iamport.kr
   - DELETE /subscribe/customers/{customer_uid}
   - GET /subscribe/customers/{customer_uid}
   - POST /subscribe/customers/{customer_uid}
+- vbanks
+- customers
+- payco
+- kakao
+- naver
+- receipts
+- external
+- certifications
+- cards
+- banks

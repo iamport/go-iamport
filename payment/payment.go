@@ -7,10 +7,10 @@ import (
 
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/iamport/go-iamport/util"
+	"github.com/joowonyun/go-iamport/util"
 
-	"github.com/iamport/go-iamport/authenticate"
 	"github.com/iamport/interface/build/go/payment"
+	"github.com/joowonyun/go-iamport/authenticate"
 )
 
 const (

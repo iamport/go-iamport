@@ -328,7 +328,7 @@ func checkPaymentImp375245484897(t *testing.T, p *payment.Payment) {
 	assert.Equal(t, "INIpayTest", p.PgId)
 	assert.Equal(t, "html5_inicis", p.PgProvider)
 	assert.Equal(t, "StdpayVBNKINIpayTest20200915101120578600", p.PgTid)
-	assert.Equal(t, "https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=StdpayVBNKINIpayTest20200915101120578600&noMethod=1", p.ReceiptUrl)
+	assert.Equal(t, "https://iniweb.inicis.com/DefaultWebApp/mall/cr/cm/mCmReceipt_head.jsp?noTid=&noMethod=1", p.ReceiptUrl)
 	assert.Equal(t, 1600132245, int(p.StartedAt))
 	assert.Equal(t, "paid", p.Status)
 	assert.Equal(t, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36", p.UserAgent)

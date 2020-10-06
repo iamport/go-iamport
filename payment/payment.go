@@ -51,7 +51,7 @@ func GetByImpUID(auth *authenticate.Authenticate, params *payment.PaymentRequest
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func GetByImpUIDs(auth *authenticate.Authenticate, params *payment.PaymentsReque
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func GetByMerchantUID(auth *authenticate.Authenticate, params *payment.PaymentMe
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +156,7 @@ func GetByMerchantUIDs(auth *authenticate.Authenticate, params *payment.Payments
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +207,7 @@ func GetByStatus(auth *authenticate.Authenticate, params *payment.PaymentStatusR
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +232,7 @@ func GetBalanceByImpUID(auth *authenticate.Authenticate, params *payment.Payment
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPayment, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPayment, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +287,7 @@ func Cancle(auth *authenticate.Authenticate, params *payment.PaymentCancleReques
 		form.Set(RefundAccount, params.RefundAccount)
 	}
 
-	res, err := util.Call(auth.Client, token, urlCancle, util.POST, &form)
+	res, err := util.CallWithForm(auth.Client, token, urlCancle, util.POST, &form)
 	if err != nil {
 		return nil, err
 	}
@@ -317,7 +317,7 @@ func Prepare(auth *authenticate.Authenticate, params *payment.PaymentPrepareRequ
 	form.Set(MerchantUID, params.MerchantUid)
 	form.Set(Amount, strconv.FormatFloat(params.Amount, 'f', -1, 64))
 
-	res, err := util.Call(auth.Client, token, urlPrepare, util.POST, &form)
+	res, err := util.CallWithForm(auth.Client, token, urlPrepare, util.POST, &form)
 	if err != nil {
 		return nil, err
 	}
@@ -342,7 +342,7 @@ func GetPrepareByMerchantUID(auth *authenticate.Authenticate, params *payment.Pa
 		return nil, err
 	}
 
-	res, err := util.Call(auth.Client, token, urlPrepare, util.GET, nil)
+	res, err := util.Call(auth.Client, token, urlPrepare, util.GET)
 	if err != nil {
 		return nil, err
 	}

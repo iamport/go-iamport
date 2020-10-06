@@ -17,6 +17,7 @@ const (
 
 	HeaderContentType     = "Content-Type"
 	HeaderContentTypeForm = "application/x-www-form-urlencoded"
+	HeaderContentTypeJson = "application/json"
 	HeaderAuthorization   = "Authorization"
 
 	GET  = "GET"
@@ -26,23 +27,56 @@ const (
 
 type Method string
 
-func Call(client *http.Client, token string, url string, method Method, form *url.Values) ([]byte, error) {
-	var req *http.Request
-	var err error
-	if form != nil {
-		req, err = http.NewRequest(string(method), url, bytes.NewBufferString(form.Encode()))
-	} else {
-		req, err = http.NewRequest(string(method), url, nil)
-	}
+func Call(client *http.Client, token string, url string, method Method) ([]byte, error) {
+	req, err := http.NewRequest(string(method), url, nil)
+
 	if err != nil {
 		return []byte{}, err
 	}
 
 	req.Header.Set(HeaderAuthorization, token)
-	if form != nil {
-		req.Header.Set(HeaderContentType, HeaderContentTypeForm)
+
+	res, err := call(client, req)
+
+	return res, nil
+}
+
+func CallWithForm(client *http.Client, token string, url string, method Method, form *url.Values) ([]byte, error) {
+
+	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(form.Encode()))
+	if err != nil {
+		return []byte{}, err
 	}
 
+	req.Header.Set(HeaderAuthorization, token)
+	req.Header.Set(HeaderContentType, HeaderContentTypeForm)
+
+	res, err := call(client, req)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return res, nil
+}
+
+func CallWithJson(client *http.Client, token string, url string, method Method, param []byte) ([]byte, error) {
+	req, err := http.NewRequest(string(method), url, bytes.NewReader(param))
+	if err != nil {
+		return []byte{}, err
+	}
+
+	req.Header.Set(HeaderAuthorization, token)
+	req.Header.Set(HeaderContentType, HeaderContentTypeJson)
+
+	res, err := call(client, req)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return res, nil
+}
+
+func call(client *http.Client, req *http.Request) ([]byte, error) {
 	res, err := client.Do(req)
 	err = errorHandler(res)
 	if err != nil {

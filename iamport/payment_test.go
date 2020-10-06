@@ -14,7 +14,7 @@ func TestGetPaymentImpUID(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentImpUID("imp_375245484897")
+	payment, err := iamport.GetPaymentImpUID("imp_785510843101")
 	assert.NoError(t, err)
 	assert.NotNil(t, payment)
 }
@@ -32,7 +32,7 @@ func TestGetPaymentImpUIDs(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentsImpUIDs([]string{"imp_375245484897"})
+	payment, err := iamport.GetPaymentsImpUIDs([]string{"imp_785510843101"})
 	assert.NoError(t, err)
 	assert.NotNil(t, payment)
 }
@@ -50,7 +50,7 @@ func TestGetPaymentMerchantUID(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentMerchantUID("merchant_1600132246284", "", "")
+	payment, err := iamport.GetPaymentMerchantUID("ORD20180131-0009728", "", "")
 	assert.NoError(t, err)
 	assert.NotNil(t, payment)
 }
@@ -68,7 +68,7 @@ func TestGetPaymentMerchantUIDInvalidStatus(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentMerchantUID("merchant_1600132246284", "error", "")
+	payment, err := iamport.GetPaymentMerchantUID("ORD20180131-0009728", "error", "")
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
@@ -77,7 +77,7 @@ func TestGetPaymentMerchantUIDInvalidSort(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentMerchantUID("merchant_1600132246284", "", "error")
+	payment, err := iamport.GetPaymentMerchantUID("ORD20180131-0009728", "", "error")
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
@@ -86,7 +86,7 @@ func TestGetPaymentsMerchantUID(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentsMerchantUID("merchant_1600132246284", "", "", 0)
+	payment, err := iamport.GetPaymentsMerchantUID("ORD20180131-0009728", "", "", 0)
 	assert.NoError(t, err)
 	assert.NotNil(t, payment)
 }
@@ -104,7 +104,7 @@ func TestGetPaymentsMerchantUIDInvalidStatus(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentsMerchantUID("merchant_1600132246284", "error", "", 0)
+	payment, err := iamport.GetPaymentsMerchantUID("ORD20180131-0009728", "error", "", 0)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
@@ -113,7 +113,7 @@ func TestGetPaymentsMerchantUIDInvalidSort(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentsMerchantUID("merchant_1600132246284", "", "error", 0)
+	payment, err := iamport.GetPaymentsMerchantUID("ORD20180131-0009728", "", "error", 0)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
@@ -122,7 +122,7 @@ func TestGetPaymentsMerchantUIDInvalidPage(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	payment, err := iamport.GetPaymentsMerchantUID("merchant_1600132246284", "", "", -1)
+	payment, err := iamport.GetPaymentsMerchantUID("ORD20180131-0009728", "", "", -1)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }

@@ -4,8 +4,8 @@ import "net/http"
 
 const (
 	BaseURL       = "https://api.iamport.kr"
-	RestApiKey    = "imp_apikey"
-	RestApiSecret = "ekKoeW8RyKuT0zgaZsUtXXTLQ4AhPFW3ZGseDA6bkA5lamv9OqDMnxyeB9wqOsuO9W3Mx9YSJ4dTqJ3f"
+	RestApiKey    = "2737886909191347"
+	RestApiSecret = "DNZ25OYnAk9qaRobLy9SWEBGyJKP1PsEDrHIfF6QZfha6FmSevKa9mRI6Cx7s0L5rsOH8Ux8aPihvE9J"
 )
 
 func GetMockBaseAuthenticate() *Authenticate {

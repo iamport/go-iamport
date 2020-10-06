@@ -84,7 +84,7 @@ func (a *Authenticate) RequestToken() error {
 	urls := []string{a.APIUrl, URLGetToken}
 	urlGetToken := strings.Join(urls, "")
 
-	res, err := util.Call(a.Client, "", urlGetToken, util.POST, &a.RestAPIKeyAndSecret)
+	res, err := util.CallWithForm(a.Client, "", urlGetToken, util.POST, &a.RestAPIKeyAndSecret)
 	if err != nil {
 		return err
 	}

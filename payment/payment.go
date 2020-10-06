@@ -9,7 +9,7 @@ import (
 
 	"github.com/joowonyun/go-iamport/util"
 
-	"github.com/iamport/interface/build/go/payment"
+	"github.com/iamport/interface/gen_src/go/payment"
 	"github.com/joowonyun/go-iamport/authenticate"
 )
 

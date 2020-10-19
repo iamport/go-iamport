@@ -10,7 +10,7 @@ import (
 
 	"github.com/iamport/interface/gen_src/go/payment"
 
-	"github.com/joowonyun/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/authenticate"
 )
 
 const (

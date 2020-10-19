@@ -5,8 +5,8 @@ import (
 	"time"
 
 	TypePayment "github.com/iamport/interface/gen_src/go/payment"
-	"github.com/joowonyun/go-iamport/payment"
-	"github.com/joowonyun/go-iamport/util"
+	"github.com/iamport/go-iamport/payment"
+	"github.com/iamport/go-iamport/util"
 )
 
 // GetPaymentImpUID imp_uid로 결제 정보 가져오기

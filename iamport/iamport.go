@@ -3,7 +3,7 @@ package iamport
 import (
 	"net/http"
 
-	"github.com/joowonyun/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/authenticate"
 )
 
 const (

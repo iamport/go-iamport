@@ -1,4 +1,4 @@
-module github.com/joowonyun/go-iamport
+module github.com/iamport/go-iamport
 
 go 1.15
 

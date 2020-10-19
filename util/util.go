@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+	"strings"
 )
 
 const (
@@ -41,9 +41,17 @@ func Call(client *http.Client, token string, url string, method Method) ([]byte,
 	return res, nil
 }
 
-func CallWithForm(client *http.Client, token string, url string, method Method, form *url.Values) ([]byte, error) {
+func CallWithForm(client *http.Client, token string, url string, method Method, param []byte) ([]byte, error) {
 
-	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(form.Encode()))
+	// json 형식을 form 형태에 맞게 변환
+	jsonStr := string(param)
+	jsonStr = strings.Replace(jsonStr, `{`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `}`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `"`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `:`, "=", -1)
+	jsonStr = strings.Replace(jsonStr, `, `, "&", -1)
+
+	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(jsonStr))
 	if err != nil {
 		return []byte{}, err
 	}

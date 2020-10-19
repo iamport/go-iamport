@@ -2,9 +2,10 @@ package payment
 
 import (
 	"math/rand"
-	"strings"
 	"testing"
 	"time"
+
+	"github.com/iamport/go-iamport/util"
 
 	"github.com/stretchr/testify/assert"
 
@@ -278,14 +279,7 @@ func xTestGetBalanceByImpUID(t *testing.T) {
 func TestPrepare(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
 
-	rand.Seed(time.Now().UnixNano())
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
-	var merchantBytes strings.Builder
-	for i := 0; i < 20; i++ {
-		merchantBytes.WriteRune(chars[rand.Intn(len(chars))])
-	}
-
-	merchantUID := merchantBytes.String()
+	merchantUID := util.GetRandomString(20)
 	amount := rand.Intn(10000)
 
 	params := &payment.PaymentPrepareRequest{

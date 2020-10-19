@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 )
 
 const (
@@ -135,4 +137,15 @@ func errorHandler(res *http.Response) error {
 	default:
 		return errors.New(ErrUnknown)
 	}
+}
+
+func GetRandomString(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
+	var bytes strings.Builder
+	for i := 0; i < length; i++ {
+		bytes.WriteRune(chars[rand.Intn(len(chars))])
+	}
+
+	return bytes.String()
 }

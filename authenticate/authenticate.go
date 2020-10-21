@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iamport/interface/gen_src/go/authenticate"
+	"github.com/iamport/interface/gen_src/go/v1/authenticate"
 	"github.com/iamport/go-iamport/util"
 	"google.golang.org/protobuf/encoding/protojson"
 )

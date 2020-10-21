@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	TypePayment "github.com/iamport/interface/gen_src/go/payment"
+	TypePayment "github.com/iamport/interface/gen_src/go/v1/ayment"
 	"github.com/iamport/go-iamport/payment"
 	"github.com/iamport/go-iamport/util"
 )

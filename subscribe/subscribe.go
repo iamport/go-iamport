@@ -8,7 +8,7 @@ import (
 	"github.com/iamport/go-iamport/util"
 
 	"github.com/iamport/go-iamport/authenticate"
-	"github.com/iamport/interface/gen_src/go/subscribe"
+	"github.com/iamport/interface/gen_src/go/v1/subscribe"
 )
 
 const (

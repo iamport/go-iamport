@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/iamport/interface/gen_src/go/payment"
+	"github.com/iamport/interface/gen_src/go/v1/payment"
 
 	"github.com/iamport/go-iamport/authenticate"
 )

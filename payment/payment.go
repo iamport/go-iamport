@@ -8,8 +8,8 @@ import (
 
 	"github.com/iamport/go-iamport/util"
 
-	"github.com/iamport/interface/gen_src/go/payment"
 	"github.com/iamport/go-iamport/authenticate"
+	"github.com/iamport/interface/gen_src/go/v1/payment"
 )
 
 const (

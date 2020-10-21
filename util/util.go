@@ -51,7 +51,7 @@ func CallWithForm(client *http.Client, token string, url string, method Method, 
 	jsonStr = strings.Replace(jsonStr, `}`, "", -1)
 	jsonStr = strings.Replace(jsonStr, `"`, "", -1)
 	jsonStr = strings.Replace(jsonStr, `:`, "=", -1)
-	jsonStr = strings.Replace(jsonStr, `, `, "&", -1)
+	jsonStr = strings.Replace(jsonStr, `,`, "&", -1)
 
 	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(jsonStr))
 	if err != nil {

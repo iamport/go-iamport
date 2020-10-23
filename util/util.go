@@ -149,3 +149,15 @@ func GetRandomString(length int) string {
 
 	return bytes.String()
 }
+
+func GetJoinString(values ...string) string {
+	len := len(values)
+	urls := make([]string, len)
+
+	for _, s := range values {
+		urls = append(urls, s)
+	}
+
+	url := strings.Join(urls, "")
+	return url
+}

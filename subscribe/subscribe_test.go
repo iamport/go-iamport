@@ -1,16 +1,17 @@
 package subscribe
 
 import (
+	"fmt"
 	"strings"
 	"testing"
-
-	"github.com/iamport/go-iamport/util"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/iamport/interface/gen_src/go/v1/subscribe"
 
 	"github.com/iamport/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/util"
 )
 
 const (
@@ -24,8 +25,22 @@ const (
 	TPwd2Digit      = "11"                  // 실제값 입력
 	TCardNumber     = "1111-2222-3333-4444" // 실제값 입력
 	TExpiry         = "2025-08"             // 실제값 입력
+	TCustomerUid    = "testcustomer_gosdk_"
 	TodoCustomValue = ""
 )
+
+var TScheduleParams = &subscribe.PaymentScheduleParam{
+	MerchantUid:   TMerchantUID,
+	ScheduleAt:    int32(time.Now().Unix()),
+	Amount:        TAmount,
+	TaxFree:       0,
+	Name:          TName,
+	BuyerName:     TBuyerName,
+	BuyerEmail:    TBuyerEmail,
+	BuyerTel:      TBuyerTel,
+	BuyerAddr:     "",
+	BuyerPostcode: "",
+}
 
 // 카드 정보 실제 값 입력시 테스트 가능
 func xTestOneTime(t *testing.T) {
@@ -114,3 +129,37 @@ func checkOnetimePaymentParameter(t *testing.T, req *subscribe.OnetimePaymentReq
   }
 }
 */
+
+// 카드 정보 실제 값 입력시 테스트 가능
+func xTestSchedule(t *testing.T) {
+
+	auth := authenticate.GetMockBingBongAuthenticate()
+
+	params := &subscribe.SchedulePayemntRequest{
+		CustomerUid: TCustomerUid + util.GetRandomString(20), // require
+		CardNumber:  TCardNumber,                             // require
+		Expiry:      TExpiry,                                 // require
+		Birth:       TBirth,                                  // require
+		Pwd_2Digit:  TPwd2Digit,
+		Schedules:   []*subscribe.PaymentScheduleParam{TScheduleParams}, // require
+	}
+
+	scheduleRes, err := Schedule(auth, params)
+	fmt.Println(scheduleRes.String())
+	assert.NoError(t, err)
+	//checkOnetimePaymentParameter(t, params, onetimeRes)
+}
+
+func TestUnschedule(t *testing.T) {
+
+	auth := authenticate.GetMockBingBongAuthenticate()
+
+	params := &subscribe.UnscheduelPaymentRequest{
+		CustomerUid: TCustomerUid + util.GetRandomString(20), // require
+	}
+
+	unscheduleRes, err := Unschedule(auth, params)
+	fmt.Println(unscheduleRes.String())
+	assert.NoError(t, err)
+	//checkOnetimePaymentParameter(t, params, onetimeRes)
+}

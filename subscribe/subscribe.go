@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	URLSubscribe = "/subscribe"
-	URLPayments  = "/payments"
-	URLOnetime   = "/onetime"
-	URLAgain     = "/again"
+	URLSubscribe  = "/subscribe"
+	URLPayments   = "/payments"
+	URLOnetime    = "/onetime"
+	URLAgain      = "/again"
+	URLSchedule   = "/schedule"
+	URLUnschedule = "/unschedule"
 )
 
 // Onetime - POST /subscribe/payments/onetime
@@ -82,4 +84,68 @@ func Again(auth *authenticate.Authenticate, params *subscribe.AgainPaymentReques
 	}
 
 	return &againRes, nil
+}
+
+// Schedule payemnt - POST /subscribe/payments/schedule
+// 지정된 스케줄에 결제를 예약합니다
+func Schedule(auth *authenticate.Authenticate, params *subscribe.SchedulePayemntRequest) (*subscribe.SchedulePaymentResponse, error) {
+	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLSchedule)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	marshaler := protojson.MarshalOptions{
+		UseProtoNames: true,
+	}
+	jsonBytes, err := marshaler.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := util.CallWithJson(auth.Client, token, url, util.POST, jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	scheduleRes := subscribe.SchedulePaymentResponse{}
+	err = protojson.Unmarshal(res, &scheduleRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &scheduleRes, nil
+}
+
+// Unschedule payemnt - POST /subscribe/payments/unschedule
+// 예약한 결제를 취소합니다
+func Unschedule(auth *authenticate.Authenticate, params *subscribe.UnschedulePaymentRequest) (*subscribe.UnschedulePaymentResponse, error) {
+	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLUnschedule)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	marshaler := protojson.MarshalOptions{
+		UseProtoNames: true,
+	}
+	jsonBytes, err := marshaler.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := util.CallWithJson(auth.Client, token, url, util.POST, jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	unscheduleRes := subscribe.UnschedulePaymentResponse{}
+	err = protojson.Unmarshal(res, &unscheduleRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &unscheduleRes, nil
 }

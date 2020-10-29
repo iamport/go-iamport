@@ -39,6 +39,9 @@ func Call(client *http.Client, token string, url string, method Method) ([]byte,
 	req.Header.Set(HeaderAuthorization, token)
 
 	res, err := call(client, req)
+	if err != nil {
+		return []byte{}, err
+	}
 
 	return res, nil
 }

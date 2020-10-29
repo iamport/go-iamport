@@ -150,11 +150,10 @@ func xTestSchedule(t *testing.T) {
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
 }
 
-func TestUnschedule(t *testing.T) {
-
+func xTestUnschedule(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 
-	params := &subscribe.UnscheduelPaymentRequest{
+	params := &subscribe.UnschedulePaymentRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(20), // require
 	}
 
@@ -162,4 +161,27 @@ func TestUnschedule(t *testing.T) {
 	fmt.Println(unscheduleRes.String())
 	assert.NoError(t, err)
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
+}
+
+func xTestGetScheduledPaymentByMerchantUID(t *testing.T) {
+	auth := authenticate.GetMockBingBongAuthenticate()
+	params := &subscribe.GetPaymentScheduleRequest{
+		MerchantUid: TMerchantUID + util.GetRandomString(20), // require
+	}
+	res, err := GetScheduledPaymentByMerchantUID(auth, params)
+	fmt.Println(res)
+	assert.NoError(t, err)
+}
+
+func xTestGetScheduledPaymentByCustomerUID(t *testing.T) {
+	auth := authenticate.GetMockBingBongAuthenticate()
+	params := &subscribe.GetPaymentScheduleByCustomerRequest{
+		CustomerUid: TCustomerUid + util.GetRandomString(5),
+		Page:        1,
+		From:        int32(time.Now().Unix() - 100000),
+		To:          int32(time.Now().Unix()),
+	}
+	res, err := GetScheduledPaymentByCustomerUID(auth, params)
+	fmt.Println(res)
+	assert.NoError(t, err)
 }

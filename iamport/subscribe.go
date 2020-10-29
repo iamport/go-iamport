@@ -174,3 +174,64 @@ func (iamport *Iamport) UnschedulePayment(customerUID string, merchantUID []stri
 
 	return res.Response, nil
 }
+
+// GetScheduledPaymentByMerchantUID Merchant UID별로 예약결제내역을 가져오는 API
+//
+// GET /subscribe/payments/schedule/{merchant_uid}
+func (iamport *Iamport) GetScheduledPaymentByMerchantUID(merchantUID string) (*TypeSubscribe.UnitSchedulePaymentResponse, error) {
+	if merchantUID == "" {
+		return nil, errors.New(ErrMustExistMerchantUID)
+	}
+
+	req := &TypeSubscribe.GetPaymentScheduleRequest{
+		MerchantUid: merchantUID,
+	}
+
+	res, err := subscribe.GetScheduledPaymentByMerchantUID(iamport.Authenticate, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Code != util.CodeOK {
+		return nil, errors.New(res.Message)
+	}
+
+	return res.Response, nil
+}
+
+// GetScheduledPaymentByCustomerUID Customer UID별로 예약결제내역을 가져오는 API
+//
+// GET /subscribe/payments/schedule/customer/{customer_uid}
+func (iamport *Iamport) GetScheduledPaymentByCustomerUID(
+	customerUID string,
+	page, from, to int32,
+	scheduleStatus string,
+) (*TypeSubscribe.NestedGetPaymentScheduleByCustomerData, error) {
+	if customerUID == "" {
+		return nil, errors.New(ErrMustExistCustomerUID)
+	}
+
+	var revisedPage int32 = 1
+	if page != 0 {
+		revisedPage = page
+	}
+
+	req := &TypeSubscribe.GetPaymentScheduleByCustomerRequest{
+		CustomerUid:    customerUID,
+		Page:           revisedPage,
+		From:           from,
+		To:             to,
+		ScheduleStatus: scheduleStatus,
+	}
+
+	res, err := subscribe.GetScheduledPaymentByCustomerUID(iamport.Authenticate, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Code != util.CodeOK {
+		return nil, errors.New(res.Message)
+	}
+
+	return res.GetResponse(), nil
+}

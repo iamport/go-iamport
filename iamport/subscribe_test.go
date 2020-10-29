@@ -9,6 +9,7 @@ import (
 	TypeSubscribe "github.com/iamport/interface/gen_src/go/v1/subscribe"
 
 	"github.com/iamport/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/util"
 )
 
 const (
@@ -88,4 +89,27 @@ func TestUnschedulePayment(t *testing.T) {
 	schedules, err := iamport.UnschedulePayment(TCustomerUid+time.Now().String(), nil)
 	assert.Contains(t, err.Error(), "취소할 예약결제 기록이 존재하지 않습니다.")
 	assert.Nil(t, schedules)
+}
+
+func TestGetScheduledPaymentByMerchantUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	schedules, err := iamport.GetScheduledPaymentByMerchantUID(TMerchantUID + time.Now().String())
+	assert.Contains(t, err.Error(), "invalid imp_uid")
+	assert.Nil(t, schedules)
+}
+
+func TestGetScheduledPaymentByCustomerUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
+	assert.NoError(t, err)
+
+	schedules, err := iamport.GetScheduledPaymentByCustomerUID(
+		TCustomerUid+util.GetRandomString(5),
+		0,
+		int32(time.Now().Unix()-100000),
+		int32(time.Now().Unix()),
+		"",
+	)
+	assert.Equal(t, len(schedules.GetList()), 0)
 }

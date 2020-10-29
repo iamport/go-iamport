@@ -1,6 +1,9 @@
 package subscribe
 
 import (
+	"strconv"
+	"strings"
+
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/iamport/go-iamport/util"
@@ -16,6 +19,11 @@ const (
 	URLAgain      = "/again"
 	URLSchedule   = "/schedule"
 	URLUnschedule = "/unschedule"
+	URLCustomers  = "/customers"
+
+	URLParamPage = "page="
+	URLParamFrom = "from="
+	URLParamTo   = "to="
 )
 
 // Onetime - POST /subscribe/payments/onetime
@@ -148,4 +156,58 @@ func Unschedule(auth *authenticate.Authenticate, params *subscribe.UnschedulePay
 	}
 
 	return &unscheduleRes, nil
+}
+
+// GetScheduledPaymentByMerchantUID - GET /subscribe/payments/schedule/{merchant_uid}
+// 예약한 결제 내역을 가져옵니다
+func GetScheduledPaymentByMerchantUID(auth *authenticate.Authenticate, params *subscribe.GetPaymentScheduleRequest) (*subscribe.GetPaymentScheduleResponse, error) {
+	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLSchedule, "/", params.GetMerchantUid())
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := util.Call(auth.Client, token, url, util.GET)
+	if err != nil {
+		return nil, err
+	}
+
+	scheduleRes := subscribe.GetPaymentScheduleResponse{}
+	err = protojson.Unmarshal(res, &scheduleRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &scheduleRes, nil
+}
+
+// GetScheduledPaymentByCustomerUID - GET /subscribe/payments/schedule/customers/{merchant_uid}
+// 예약한 결제 내역을 가져옵니다
+func GetScheduledPaymentByCustomerUID(auth *authenticate.Authenticate, params *subscribe.GetPaymentScheduleByCustomerRequest) (*subscribe.GetPaymentScheduleByCustomerResponse, error) {
+	urls := []string{auth.APIUrl, URLSubscribe, URLPayments, URLSchedule, URLCustomers, "/", params.GetCustomerUid()}
+
+	isFirstQuery := true
+	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamPage, strconv.Itoa(int(params.GetPage()))}...)
+	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamFrom, strconv.Itoa(int(params.GetFrom()))}...)
+	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamTo, strconv.Itoa(int(params.GetTo()))}...)
+	urlGetSchedule := strings.Join(urls, "")
+
+	token, err := auth.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := util.Call(auth.Client, token, urlGetSchedule, util.GET)
+	if err != nil {
+		return nil, err
+	}
+
+	scheduleRes := subscribe.GetPaymentScheduleByCustomerResponse{}
+	err = protojson.Unmarshal(res, &scheduleRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &scheduleRes, nil
 }

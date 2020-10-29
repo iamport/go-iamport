@@ -44,13 +44,17 @@ https://api.iamport.kr
 - escrows
   - POST /escrows/logis/{imp_uid}
   - PUT /escrows/logis/{imp_uid}
-
-### TODO
 - subscribe
   - POST /subscribe/payments/ontime
   - POST /subscribe/payments/again
   - POST /subscribe/payments/schedule
   - POST /subscribe/payments/unschedule
+
+### TODO
+
+- subscribe
+  - GET /subscribe/payments/schedule/{merchant_uid}
+  - GET /subscribe/payments/schedule/customers/{customer_uid}
 - subscribe.customer
   - DELETE /subscribe/customers/{customer_uid}
   - GET /subscribe/customers/{customer_uid}

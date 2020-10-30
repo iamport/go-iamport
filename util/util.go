@@ -22,9 +22,10 @@ const (
 	HeaderContentTypeJson = "application/json"
 	HeaderAuthorization   = "Authorization"
 
-	GET  = "GET"
-	POST = "POST"
-	PUT  = "PUT"
+	GET    = "GET"
+	POST   = "POST"
+	PUT    = "PUT"
+	DELETE = "DELETE"
 )
 
 type Method string

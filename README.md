@@ -49,16 +49,18 @@ https://api.iamport.kr
   - POST /subscribe/payments/again
   - POST /subscribe/payments/schedule
   - POST /subscribe/payments/unschedule
-
-### TODO
-
-- subscribe
   - GET /subscribe/payments/schedule/{merchant_uid}
   - GET /subscribe/payments/schedule/customers/{customer_uid}
 - subscribe.customer
+  - GET /subscribe/customers
   - DELETE /subscribe/customers/{customer_uid}
   - GET /subscribe/customers/{customer_uid}
   - POST /subscribe/customers/{customer_uid}
+  - GET /subscribe/customers/{customer_uid}/payments
+  - GET /subscribe/customers/{customer_uid}/schedules
+
+### TODO
+
 - vbanks
 - customers
 - payco

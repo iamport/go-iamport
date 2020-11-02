@@ -1,0 +1,12 @@
+language: go
+go:
+  - 1.15.x
+dist: focal
+osx_image: xcode12.2
+script:
+  - bash ./scripts/tests_with_cover.sh
+os:
+  - linux
+  - osx
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

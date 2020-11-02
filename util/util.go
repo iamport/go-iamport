@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
-	"net/url"
+	"strings"
+	"time"
 )
 
 const (
@@ -20,9 +22,10 @@ const (
 	HeaderContentTypeJson = "application/json"
 	HeaderAuthorization   = "Authorization"
 
-	GET  = "GET"
-	POST = "POST"
-	PUT  = "PUT"
+	GET    = "GET"
+	POST   = "POST"
+	PUT    = "PUT"
+	DELETE = "DELETE"
 )
 
 type Method string
@@ -37,13 +40,24 @@ func Call(client *http.Client, token string, url string, method Method) ([]byte,
 	req.Header.Set(HeaderAuthorization, token)
 
 	res, err := call(client, req)
+	if err != nil {
+		return []byte{}, err
+	}
 
 	return res, nil
 }
 
-func CallWithForm(client *http.Client, token string, url string, method Method, form *url.Values) ([]byte, error) {
+func CallWithForm(client *http.Client, token string, url string, method Method, param []byte) ([]byte, error) {
 
-	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(form.Encode()))
+	// json 형식을 form 형태에 맞게 변환
+	jsonStr := string(param)
+	jsonStr = strings.Replace(jsonStr, `{`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `}`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `"`, "", -1)
+	jsonStr = strings.Replace(jsonStr, `:`, "=", -1)
+	jsonStr = strings.Replace(jsonStr, `,`, "&", -1)
+
+	req, err := http.NewRequest(string(method), url, bytes.NewBufferString(jsonStr))
 	if err != nil {
 		return []byte{}, err
 	}
@@ -127,4 +141,27 @@ func errorHandler(res *http.Response) error {
 	default:
 		return errors.New(ErrUnknown)
 	}
+}
+
+func GetRandomString(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
+	var bytes strings.Builder
+	for i := 0; i < length; i++ {
+		bytes.WriteRune(chars[rand.Intn(len(chars))])
+	}
+
+	return bytes.String()
+}
+
+func GetJoinString(values ...string) string {
+	len := len(values)
+	urls := make([]string, len)
+
+	for _, s := range values {
+		urls = append(urls, s)
+	}
+
+	url := strings.Join(urls, "")
+	return url
 }

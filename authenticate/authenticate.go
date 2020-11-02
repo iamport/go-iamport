@@ -1,13 +1,13 @@
 package authenticate
 
 import (
+	"bytes"
 	"errors"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
-	"github.com/iamport/interface/gen_src/go/authenticate"
+	"github.com/iamport/interface/gen_src/go/v1/authenticate"
 	"github.com/iamport/go-iamport/util"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -26,7 +26,7 @@ const (
 type Authenticate struct {
 	APIUrl              string
 	Client              *http.Client
-	RestAPIKeyAndSecret url.Values
+	RestAPIKeyAndSecret []byte
 	Token               string
 	Expired             time.Time
 }
@@ -46,13 +46,12 @@ func NewAuthenticate(apiURL string, cli *http.Client, restAPIKey string, restAPI
 		return nil, errors.New(ErrRestAPISecretMissing)
 	}
 
-	form := url.Values{}
-	form.Set(IMPKey, restAPIKey)
-	form.Set(IMPSecret, restAPISecret)
+	keysStrs := []string{`{"`, IMPKey, `":"`, restAPIKey, `", "`, IMPSecret, `":"`, restAPISecret, `"}`}
+
 	auth := &Authenticate{
 		APIUrl:              apiURL,
 		Client:              cli,
-		RestAPIKeyAndSecret: form,
+		RestAPIKeyAndSecret: bytes.NewBufferString(strings.Join(keysStrs, "")).Bytes(),
 	}
 
 	err := auth.RequestToken()
@@ -84,7 +83,7 @@ func (a *Authenticate) RequestToken() error {
 	urls := []string{a.APIUrl, URLGetToken}
 	urlGetToken := strings.Join(urls, "")
 
-	res, err := util.CallWithForm(a.Client, "", urlGetToken, util.POST, &a.RestAPIKeyAndSecret)
+	res, err := util.CallWithForm(a.Client, "", urlGetToken, util.POST, a.RestAPIKeyAndSecret)
 	if err != nil {
 		return err
 	}

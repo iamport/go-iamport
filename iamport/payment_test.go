@@ -2,11 +2,11 @@ package iamport
 
 import (
 	"math/rand"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/iamport/go-iamport/authenticate"
+	"github.com/iamport/go-iamport/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -193,28 +193,33 @@ func TestGetPaymentsStatusWithMoreThan3Month(t *testing.T) {
 	assert.Nil(t, payment)
 }
 
-// TODO 테스트 데이터 필요 (KCP or Payco)
-func xTestGetPaymentBalanceImpUID(t *testing.T) {
+func TestGetPaymentBalanceImpUID(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
 	payment, err := iamport.GetPaymentBalanceImpUID("imp_088621754304")
+	assert.Error(t, err)
+	assert.Nil(t, payment)
+}
+
+func TestCancelPaymentImpUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
-	assert.NotNil(t, payment)
+
+	payment, err := iamport.CancelPaymentImpUID(
+		"imp_088621754304", TMerchantUID, float64(1000), float64(0), float64(0),
+		"just test", "just test", "", "",
+	)
+
+	assert.Error(t, err)
+	assert.Nil(t, payment)
 }
 
 func TestPreparePayment(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
-	rand.Seed(time.Now().UnixNano())
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVEWXYZabcdefghijklmnopqrstuvewxyz0123456789")
-	var merchantBytes strings.Builder
-	for i := 0; i < 20; i++ {
-		merchantBytes.WriteRune(chars[rand.Intn(len(chars))])
-	}
-
-	merchantUID := merchantBytes.String()
+	merchantUID := util.GetRandomString(20)
 	amount := rand.Intn(10000)
 
 	payment, err := iamport.PreparePayment(merchantUID, float64(amount))

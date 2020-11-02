@@ -12,6 +12,7 @@ const (
 	ErrMustExistImpUID              = "iamport: imp_uid must be exist"
 	ErrMustExistMerchantUID         = "iamport: Merchant UID must be exist"
 	ErrMustExistImpUIDorMerchantUID = "iamport: imp_uid or Merchant UID must be exist"
+	ErrMustExistCustomerUID         = "iamport: customer_uid must be exist"
 	ErrInvalidStatusParam           = "iamport: status parmeter is invalid. must be all, ready, paid, failed and cancelled"
 	ErrInvalidSortParam             = "iamport: sort parmeter is invalid. must be -started, started, -paid, paid, -updated and updated"
 	ErrInvalidPage                  = "iamport: page is more than 1"

@@ -1,5 +1,7 @@
 # go-iamport
 
+[![Build Status](https://travis-ci.com/iamport/go-iamport.svg?branch=master)](https://travis-ci.com/iamport/go-iamport) [![codecov](https://codecov.io/gh/iamport/go-iamport/branch/master/graph/badge.svg?token=TS1W2W9UO0)](https://codecov.io/gh/iamport/go-iamport)
+
 Go Language 아임포트 Rest API Client  
 https://api.iamport.kr
 
@@ -44,17 +46,23 @@ https://api.iamport.kr
 - escrows
   - POST /escrows/logis/{imp_uid}
   - PUT /escrows/logis/{imp_uid}
-
-### TODO
 - subscribe
   - POST /subscribe/payments/ontime
   - POST /subscribe/payments/again
   - POST /subscribe/payments/schedule
   - POST /subscribe/payments/unschedule
+  - GET /subscribe/payments/schedule/{merchant_uid}
+  - GET /subscribe/payments/schedule/customers/{customer_uid}
 - subscribe.customer
+  - GET /subscribe/customers
   - DELETE /subscribe/customers/{customer_uid}
   - GET /subscribe/customers/{customer_uid}
   - POST /subscribe/customers/{customer_uid}
+  - GET /subscribe/customers/{customer_uid}/payments
+  - GET /subscribe/customers/{customer_uid}/schedules
+
+### TODO
+
 - vbanks
 - customers
 - payco

@@ -1,7 +1,6 @@
 package payment
 
 import (
-	"net/url"
 	"strconv"
 	"strings"
 
@@ -9,8 +8,8 @@ import (
 
 	"github.com/iamport/go-iamport/util"
 
-	"github.com/iamport/interface/gen_src/go/payment"
 	"github.com/iamport/go-iamport/authenticate"
+	"github.com/iamport/interface/gen_src/go/v1/payment"
 )
 
 const (
@@ -19,7 +18,7 @@ const (
 	URLFindAll  = "/findAll"
 	URLBalance  = "/balance"
 	URLStatus   = "/status"
-	URLCancle   = "/cancle"
+	URLCancel   = "/cancel"
 	URLPrepare  = "/prepare"
 
 	URLParamSorting = "sorting="
@@ -28,16 +27,6 @@ const (
 	URLParamFrom    = "from="
 	URLParamTo      = "to="
 	URLParamImpUids = "imp_uid[]="
-
-	ImpUID        = "imp_uid"
-	MerchantUID   = "merchant_uid"
-	Amount        = "amount"
-	TaxFree       = "tax_free"
-	Checksum      = "checksum"
-	Reason        = "reason"
-	RefundHolder  = "refund_holder"
-	RefundBank    = "refund_bank"
-	RefundAccount = "refund_account"
 )
 
 // GetByImpUID - GET /payments/{imp_uid}
@@ -246,59 +235,38 @@ func GetBalanceByImpUID(auth *authenticate.Authenticate, params *payment.Payment
 	return &paymentRes, nil
 }
 
-// Cancle - POST /payments/cancel
+// Cancel - POST /payments/cancel
 // 승인된 결제를 취소합니다.
 // 신용카드/실시간계좌이체/휴대폰소액결제의 경우 즉시 취소처리가 이뤄지게 되며, 가상계좌의 경우는 환불받으실 계좌정보를 같이 전달해주시면 환불정보가 PG사에 등록되어 익영업일에 처리됩니다.(가상계좌 환불관련 특약계약 필요)
-func Cancle(auth *authenticate.Authenticate, params *payment.PaymentCancleRequest) (*payment.PaymentCancleResponse, error) {
-	urls := []string{auth.APIUrl, URLPayments, URLCancle}
-	urlCancle := strings.Join(urls, "")
+func Cancel(auth *authenticate.Authenticate, params *payment.PaymentCancelRequest) (*payment.PaymentCancelResponse, error) {
+	urls := []string{auth.APIUrl, URLPayments, URLCancel}
+	urlCancel := strings.Join(urls, "")
 
 	token, err := auth.GetToken()
 	if err != nil {
 		return nil, err
 	}
 
-	form := url.Values{}
-	if params.ImpUid != "" {
-		form.Set(ImpUID, params.ImpUid)
+	marshaler := protojson.MarshalOptions{
+		UseProtoNames: true,
 	}
-	if params.MerchantUid != "" {
-		form.Set(MerchantUID, params.MerchantUid)
-	}
-	if params.Amount != 0 {
-		form.Set(Amount, strconv.FormatFloat(params.Amount, 'f', -1, 64))
-	}
-	if params.TaxFree != 0 {
-		form.Set(TaxFree, strconv.FormatFloat(params.TaxFree, 'f', -1, 64))
-	}
-	if params.Checksum != 0 {
-		form.Set(Checksum, strconv.FormatFloat(params.Checksum, 'f', -1, 64))
-	}
-	if params.Reason != "" {
-		form.Set(Reason, params.Reason)
-	}
-	if params.RefundHolder != "" {
-		form.Set(RefundHolder, params.RefundHolder)
-	}
-	if params.RefundBank != "" {
-		form.Set(RefundBank, params.RefundBank)
-	}
-	if params.RefundAccount != "" {
-		form.Set(RefundAccount, params.RefundAccount)
-	}
-
-	res, err := util.CallWithForm(auth.Client, token, urlCancle, util.POST, &form)
+	jsonBytes, err := marshaler.Marshal(params)
 	if err != nil {
 		return nil, err
 	}
 
-	cancleRes := payment.PaymentCancleResponse{}
-	err = protojson.Unmarshal(res, &cancleRes)
+	res, err := util.CallWithForm(auth.Client, token, urlCancel, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &cancleRes, nil
+	cancelRes := payment.PaymentCancelResponse{}
+	err = protojson.Unmarshal(res, &cancelRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &cancelRes, nil
 }
 
 // Prepare - POST /payments/prepare
@@ -313,11 +281,13 @@ func Prepare(auth *authenticate.Authenticate, params *payment.PaymentPrepareRequ
 		return nil, err
 	}
 
-	form := url.Values{}
-	form.Set(MerchantUID, params.MerchantUid)
-	form.Set(Amount, strconv.FormatFloat(params.Amount, 'f', -1, 64))
+	marshaler := protojson.MarshalOptions{
+		UseProtoNames: true,
+	}
 
-	res, err := util.CallWithForm(auth.Client, token, urlPrepare, util.POST, &form)
+	jsonBytes, err := marshaler.Marshal(params)
+
+	res, err := util.CallWithForm(auth.Client, token, urlPrepare, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}

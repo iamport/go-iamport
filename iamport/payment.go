@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	TypePayment "github.com/iamport/interface/gen_src/go/payment"
+	TypePayment "github.com/iamport/interface/gen_src/go/v1/payment"
 	"github.com/iamport/go-iamport/payment"
 	"github.com/iamport/go-iamport/util"
 )
@@ -216,7 +216,7 @@ func (iamport *Iamport) CancelPaymentImpUID(iuid string, merchantUID string, amo
 		return nil, errors.New(ErrInvalidAmount)
 	}
 
-	req := &TypePayment.PaymentCancleRequest{
+	req := &TypePayment.PaymentCancelRequest{
 		ImpUid:        iuid,
 		MerchantUid:   merchantUID,
 		Amount:        amount,
@@ -228,7 +228,7 @@ func (iamport *Iamport) CancelPaymentImpUID(iuid string, merchantUID string, amo
 		RefundAccount: refundAccount,
 	}
 
-	res, err := payment.Cancle(iamport.Authenticate, req)
+	res, err := payment.Cancel(iamport.Authenticate, req)
 	if err != nil {
 		return nil, err
 	}

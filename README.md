@@ -1,5 +1,7 @@
 # go-iamport
 
+[![Build Status](https://travis-ci.com/iamport/go-iamport.svg?branch=master)](https://travis-ci.com/iamport/go-iamport) [![codecov](https://codecov.io/gh/iamport/go-iamport/branch/master/graph/badge.svg?token=TS1W2W9UO0)](https://codecov.io/gh/iamport/go-iamport)
+
 Go Language 아임포트 Rest API Client  
 https://api.iamport.kr
 

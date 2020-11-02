@@ -31,7 +31,7 @@ const (
 
 var TScheduleParams = &subscribe.PaymentScheduleParam{
 	MerchantUid:   TMerchantUID,
-	ScheduleAt:    int32(time.Now().Unix()),
+	ScheduleAt:    int32(time.Now().Unix() + 100000),
 	Amount:        TAmount,
 	TaxFree:       0,
 	Name:          TName,
@@ -43,7 +43,7 @@ var TScheduleParams = &subscribe.PaymentScheduleParam{
 }
 
 // 카드 정보 실제 값 입력시 테스트 가능
-func xTestOneTime(t *testing.T) {
+func TestOneTime(t *testing.T) {
 
 	auth := authenticate.GetMockBingBongAuthenticate()
 
@@ -70,8 +70,9 @@ func xTestOneTime(t *testing.T) {
 	}
 
 	onetimeRes, err := Onetime(auth, params)
+	assert.Contains(t, onetimeRes.String(), "유효하지않은 카드번호를 입력하셨습니다.")
 	assert.NoError(t, err)
-	checkOnetimePaymentParameter(t, params, onetimeRes)
+	//checkOnetimePaymentParameter(t, params, onetimeRes)
 }
 
 // 일반 카드 결제 파라미터 체크
@@ -131,7 +132,7 @@ func checkOnetimePaymentParameter(t *testing.T, req *subscribe.OnetimePaymentReq
 */
 
 // 카드 정보 실제 값 입력시 테스트 가능
-func xTestSchedule(t *testing.T) {
+func TestSchedule(t *testing.T) {
 
 	auth := authenticate.GetMockBingBongAuthenticate()
 
@@ -145,12 +146,12 @@ func xTestSchedule(t *testing.T) {
 	}
 
 	scheduleRes, err := Schedule(auth, params)
-	fmt.Println(scheduleRes.String())
+	assert.Contains(t, scheduleRes.String(), "유효하지않은 카드번호를 입력하셨습니다.")
 	assert.NoError(t, err)
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
 }
 
-func xTestUnschedule(t *testing.T) {
+func TestUnschedule(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 
 	params := &subscribe.UnschedulePaymentRequest{
@@ -159,21 +160,22 @@ func xTestUnschedule(t *testing.T) {
 
 	unscheduleRes, err := Unschedule(auth, params)
 	fmt.Println(unscheduleRes.String())
+	assert.Contains(t, unscheduleRes.String(), "취소할 예약결제 기록이 존재하지 않습니다.")
 	assert.NoError(t, err)
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
 }
 
-func xTestGetScheduledPaymentByMerchantUID(t *testing.T) {
+func TestGetScheduledPaymentByMerchantUID(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.GetPaymentScheduleRequest{
 		MerchantUid: TMerchantUID + util.GetRandomString(20), // require
 	}
 	res, err := GetScheduledPaymentByMerchantUID(auth, params)
 	fmt.Println(res)
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
-func xTestGetScheduledPaymentByCustomerUID(t *testing.T) {
+func TestGetScheduledPaymentByCustomerUID(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.GetPaymentScheduleByCustomerRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),

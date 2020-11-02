@@ -29,7 +29,7 @@ const (
 	TodoCustomValue = ""
 )
 
-func xTestGetMultipleBillingKeysByCustomer(t *testing.T) {
+func TestGetMultipleBillingKeysByCustomer(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.GetMultipleCustomerBillingKeyRequest{
 		CustomerUid: []string{
@@ -39,10 +39,10 @@ func xTestGetMultipleBillingKeysByCustomer(t *testing.T) {
 	}
 	res, err := GetMultipleBillingKeysByCustomer(auth, params)
 	fmt.Println(res)
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
-func xTestDeleteBillingKey(t *testing.T) {
+func TestDeleteBillingKey(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.DeleteCustomerBillingKeyRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
@@ -54,7 +54,7 @@ func xTestDeleteBillingKey(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func xTestGetBillingKeyByCustomer(t *testing.T) {
+func TestGetBillingKeyByCustomer(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.GetCustomerBillingKeyRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
@@ -64,7 +64,7 @@ func xTestGetBillingKeyByCustomer(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func xTestInsertBillingKeyByCustomer(t *testing.T) {
+func TestInsertBillingKeyByCustomer(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.InsertCustomerBillingKeyRequest{
 		CustomerUid:   TCustomerUid + util.GetRandomString(5),
@@ -81,7 +81,7 @@ func xTestInsertBillingKeyByCustomer(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func xTestGetPaymentsByCustomer(t *testing.T) {
+func TestGetPaymentsByCustomer(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe.GetPaidByBillingKeyListRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
@@ -92,7 +92,7 @@ func xTestGetPaymentsByCustomer(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func xTestGetScheduledPaymentByCustomerUID(t *testing.T) {
+func TestGetScheduledPaymentByCustomerUID(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 	params := &subscribe_dup.GetPaymentScheduleByCustomerRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),

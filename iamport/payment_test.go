@@ -193,14 +193,26 @@ func TestGetPaymentsStatusWithMoreThan3Month(t *testing.T) {
 	assert.Nil(t, payment)
 }
 
-// TODO 테스트 데이터 필요 (KCP or Payco)
-func xTestGetPaymentBalanceImpUID(t *testing.T) {
+func TestGetPaymentBalanceImpUID(t *testing.T) {
 	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
 
 	payment, err := iamport.GetPaymentBalanceImpUID("imp_088621754304")
+	assert.Error(t, err)
+	assert.Nil(t, payment)
+}
+
+func TestCancelPaymentImpUID(t *testing.T) {
+	iamport, err := NewIamport(authenticate.BaseURL, authenticate.RestApiKey, authenticate.RestApiSecret)
 	assert.NoError(t, err)
-	assert.NotNil(t, payment)
+
+	payment, err := iamport.CancelPaymentImpUID(
+		"imp_088621754304", TMerchantUID, float64(1000), float64(0), float64(0),
+		"just test", "just test", "", "",
+	)
+
+	assert.Error(t, err)
+	assert.Nil(t, payment)
 }
 
 func TestPreparePayment(t *testing.T) {

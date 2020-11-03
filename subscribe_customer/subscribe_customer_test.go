@@ -37,7 +37,13 @@ func TestGetMultipleBillingKeysByCustomer(t *testing.T) {
 			TCustomerUid + util.GetRandomString(5),
 		},
 	}
-	res, err := GetMultipleBillingKeysByCustomer(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := GetMultipleBillingKeysByCustomer(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.Error(t, err)
 }
@@ -49,7 +55,13 @@ func TestDeleteBillingKey(t *testing.T) {
 		Reason:      "just test",
 		Requester:   "you",
 	}
-	res, err := DeleteBillingKey(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := DeleteBillingKey(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }
@@ -59,7 +71,13 @@ func TestGetBillingKeyByCustomer(t *testing.T) {
 	params := &subscribe.GetCustomerBillingKeyRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
 	}
-	res, err := GetBillingKeyByCustomer(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := GetBillingKeyByCustomer(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }
@@ -76,7 +94,13 @@ func TestInsertBillingKeyByCustomer(t *testing.T) {
 		CustomerTel:   TBuyerTel,
 		CustomerEmail: TBuyerEmail,
 	}
-	res, err := InsertBillingKeyByCustomer(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := InsertBillingKeyByCustomer(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }
@@ -87,7 +111,13 @@ func TestGetPaymentsByCustomer(t *testing.T) {
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
 		Page:        1,
 	}
-	res, err := GetPaymentsByCustomer(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := GetPaymentsByCustomer(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }
@@ -100,7 +130,13 @@ func TestGetScheduledPaymentByCustomerUID(t *testing.T) {
 		From:        int32(time.Now().Unix() - 100000),
 		To:          int32(time.Now().Unix()),
 	}
-	res, err := GetScheduledPaymentByCustomerUID(auth, params)
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err := GetScheduledPaymentByCustomerUID(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }

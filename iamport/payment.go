@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	TypePayment "github.com/iamport/interface/gen_src/go/v1/payment"
 	"github.com/iamport/go-iamport/payment"
 	"github.com/iamport/go-iamport/util"
+	TypePayment "github.com/iamport/interface/gen_src/go/v1/payment"
 )
 
 // GetPaymentImpUID imp_uid로 결제 정보 가져오기
@@ -17,11 +17,19 @@ func (iamport *Iamport) GetPaymentImpUID(iuid string) (*TypePayment.Payment, err
 		return nil, errors.New(ErrMustExistImpUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	reqPaymentImpUID := &TypePayment.PaymentRequest{
 		ImpUid: iuid,
 	}
 
-	res, err := payment.GetByImpUID(iamport.Authenticate, reqPaymentImpUID)
+	res, err := payment.GetByImpUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, reqPaymentImpUID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -41,11 +49,19 @@ func (iamport *Iamport) GetPaymentsImpUIDs(iuids []string) ([]*TypePayment.Payme
 		return nil, errors.New(ErrMustExistImpUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypePayment.PaymentsRequest{
 		ImpUid: iuids,
 	}
 
-	res, err := payment.GetByImpUIDs(iamport.Authenticate, req)
+	res, err := payment.GetByImpUIDs(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -73,13 +89,22 @@ func (iamport *Iamport) GetPaymentMerchantUID(muid string, status string, sortin
 		return nil, errors.New(ErrInvalidSortParam)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	merchantUIDPaymentReq := &TypePayment.PaymentMerchantUidRequest{
 		MerchantUid: muid,
 		Status:      status,
 		Sorting:     sorting,
 	}
 
-	res, err := payment.GetByMerchantUID(iamport.Authenticate, merchantUIDPaymentReq)
+	res, err := payment.GetByMerchantUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, merchantUIDPaymentReq,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -111,6 +136,11 @@ func (iamport *Iamport) GetPaymentsMerchantUID(muid string, status string, sorti
 		return nil, errors.New(ErrInvalidPage)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	merchantUIDPaymentReq := &TypePayment.PaymentsMerchantUidRequest{
 		MerchantUid: muid,
 		Status:      status,
@@ -118,7 +148,10 @@ func (iamport *Iamport) GetPaymentsMerchantUID(muid string, status string, sorti
 		Page:        int32(page),
 	}
 
-	res, err := payment.GetByMerchantUIDs(iamport.Authenticate, merchantUIDPaymentReq)
+	res, err := payment.GetByMerchantUIDs(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, merchantUIDPaymentReq,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -158,6 +191,11 @@ func (iamport *Iamport) GetPaymentsStatus(status string, page int, limit int, fr
 		return nil, errors.New(ErrInvalidTo)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypePayment.PaymentStatusRequest{
 
 		Status:  status,
@@ -168,7 +206,11 @@ func (iamport *Iamport) GetPaymentsStatus(status string, page int, limit int, fr
 		To:      int32(to.Unix()),
 	}
 
-	res, err := payment.GetByStatus(iamport.Authenticate, req)
+	res, err := payment.GetByStatus(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -188,11 +230,19 @@ func (iamport *Iamport) GetPaymentBalanceImpUID(iuid string) (*TypePayment.Payme
 		return nil, errors.New(ErrMustExistImpUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	reqPaymentImpUID := &TypePayment.PaymentBalanceRequest{
 		ImpUid: iuid,
 	}
 
-	res, err := payment.GetBalanceByImpUID(iamport.Authenticate, reqPaymentImpUID)
+	res, err := payment.GetBalanceByImpUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, reqPaymentImpUID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -216,6 +266,11 @@ func (iamport *Iamport) CancelPaymentImpUID(iuid string, merchantUID string, amo
 		return nil, errors.New(ErrInvalidAmount)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypePayment.PaymentCancelRequest{
 		ImpUid:        iuid,
 		MerchantUid:   merchantUID,
@@ -228,7 +283,10 @@ func (iamport *Iamport) CancelPaymentImpUID(iuid string, merchantUID string, amo
 		RefundAccount: refundAccount,
 	}
 
-	res, err := payment.Cancel(iamport.Authenticate, req)
+	res, err := payment.Cancel(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -252,12 +310,20 @@ func (iamport *Iamport) PreparePayment(merchantUID string, amount float64) (*Typ
 		return nil, errors.New(ErrInvalidAmount)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypePayment.PaymentPrepareRequest{
 		MerchantUid: merchantUID,
 		Amount:      amount,
 	}
 
-	res, err := payment.Prepare(iamport.Authenticate, req)
+	res, err := payment.Prepare(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -277,11 +343,19 @@ func (iamport *Iamport) GetPreparePayment(merchantUID string) (*TypePayment.Prep
 		return nil, errors.New(ErrMustExistMerchantUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypePayment.PaymentPrepareRequest{
 		MerchantUid: merchantUID,
 	}
 
-	res, err := payment.GetPrepareByMerchantUID(iamport.Authenticate, req)
+	res, err := payment.GetPrepareByMerchantUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}

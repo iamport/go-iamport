@@ -1,6 +1,7 @@
 package subscribe
 
 import (
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -8,7 +9,6 @@ import (
 
 	"github.com/iamport/go-iamport/util"
 
-	"github.com/iamport/go-iamport/authenticate"
 	"github.com/iamport/interface/gen_src/go/v1/subscribe"
 )
 
@@ -32,13 +32,8 @@ const (
 // 동일한 merchant_uid는 재사용이 불가능하며 고유한 값을 전달해주셔야 합니다.
 // 빌링키 저장 시, buyer_email, buyer_name 등의 정보는 customer 부가정보인 customer_email, customer_name 등으로 함께 저장됩니다.
 // /subscribe/customers/{customer_uid} 참조
-func Onetime(auth *authenticate.Authenticate, params *subscribe.OnetimePaymentRequest) (*subscribe.OnetimePaymentResponse, error) {
-	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLOnetime)
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func Onetime(client *http.Client, apiDomain string, token string, params *subscribe.OnetimePaymentRequest) (*subscribe.OnetimePaymentResponse, error) {
+	url := util.GetJoinString(apiDomain, URLSubscribe, URLPayments, URLOnetime)
 
 	marshaler := protojson.MarshalOptions{
 		UseProtoNames: true,
@@ -48,7 +43,7 @@ func Onetime(auth *authenticate.Authenticate, params *subscribe.OnetimePaymentRe
 		return nil, err
 	}
 
-	res, err := util.CallWithForm(auth.Client, token, url, util.POST, jsonBytes)
+	res, err := util.CallWithForm(client, token, url, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -64,13 +59,8 @@ func Onetime(auth *authenticate.Authenticate, params *subscribe.OnetimePaymentRe
 
 // Again - POST /subscribe/payments/again
 // 저장된 빌링키로 재결제를 하는 경우 사용됩니다. /subscribe/payments/onetime 또는 /subscribe/customers/{customer_uid} 로 등록된 빌링키가 있을 때 매칭되는 customer_uid로 재결제를 진행할 수 있습니다.
-func Again(auth *authenticate.Authenticate, params *subscribe.AgainPaymentRequest) (*subscribe.AgainPaymentResponse, error) {
-	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLAgain)
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func Again(client *http.Client, apiDomain string, token string, params *subscribe.AgainPaymentRequest) (*subscribe.AgainPaymentResponse, error) {
+	url := util.GetJoinString(apiDomain, URLSubscribe, URLPayments, URLAgain)
 
 	marshaler := protojson.MarshalOptions{
 		UseProtoNames: true,
@@ -80,7 +70,7 @@ func Again(auth *authenticate.Authenticate, params *subscribe.AgainPaymentReques
 		return nil, err
 	}
 
-	res, err := util.CallWithForm(auth.Client, token, url, util.POST, jsonBytes)
+	res, err := util.CallWithForm(client, token, url, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -96,13 +86,8 @@ func Again(auth *authenticate.Authenticate, params *subscribe.AgainPaymentReques
 
 // Schedule payemnt - POST /subscribe/payments/schedule
 // 지정된 스케줄에 결제를 예약합니다
-func Schedule(auth *authenticate.Authenticate, params *subscribe.SchedulePayemntRequest) (*subscribe.SchedulePaymentResponse, error) {
-	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLSchedule)
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func Schedule(client *http.Client, apiDomain string, token string, params *subscribe.SchedulePayemntRequest) (*subscribe.SchedulePaymentResponse, error) {
+	url := util.GetJoinString(apiDomain, URLSubscribe, URLPayments, URLSchedule)
 
 	marshaler := protojson.MarshalOptions{
 		UseProtoNames: true,
@@ -112,7 +97,7 @@ func Schedule(auth *authenticate.Authenticate, params *subscribe.SchedulePayemnt
 		return nil, err
 	}
 
-	res, err := util.CallWithJson(auth.Client, token, url, util.POST, jsonBytes)
+	res, err := util.CallWithJson(client, token, url, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -128,13 +113,8 @@ func Schedule(auth *authenticate.Authenticate, params *subscribe.SchedulePayemnt
 
 // Unschedule payemnt - POST /subscribe/payments/unschedule
 // 예약한 결제를 취소합니다
-func Unschedule(auth *authenticate.Authenticate, params *subscribe.UnschedulePaymentRequest) (*subscribe.UnschedulePaymentResponse, error) {
-	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLUnschedule)
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func Unschedule(client *http.Client, apiDomain string, token string, params *subscribe.UnschedulePaymentRequest) (*subscribe.UnschedulePaymentResponse, error) {
+	url := util.GetJoinString(apiDomain, URLSubscribe, URLPayments, URLUnschedule)
 
 	marshaler := protojson.MarshalOptions{
 		UseProtoNames: true,
@@ -144,7 +124,7 @@ func Unschedule(auth *authenticate.Authenticate, params *subscribe.UnschedulePay
 		return nil, err
 	}
 
-	res, err := util.CallWithJson(auth.Client, token, url, util.POST, jsonBytes)
+	res, err := util.CallWithJson(client, token, url, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -160,15 +140,10 @@ func Unschedule(auth *authenticate.Authenticate, params *subscribe.UnschedulePay
 
 // GetScheduledPaymentByMerchantUID - GET /subscribe/payments/schedule/{merchant_uid}
 // 예약한 결제 내역을 가져옵니다
-func GetScheduledPaymentByMerchantUID(auth *authenticate.Authenticate, params *subscribe.GetPaymentScheduleRequest) (*subscribe.GetPaymentScheduleResponse, error) {
-	url := util.GetJoinString(auth.APIUrl, URLSubscribe, URLPayments, URLSchedule, "/", params.GetMerchantUid())
+func GetScheduledPaymentByMerchantUID(client *http.Client, apiDomain string, token string, params *subscribe.GetPaymentScheduleRequest) (*subscribe.GetPaymentScheduleResponse, error) {
+	url := util.GetJoinString(apiDomain, URLSubscribe, URLPayments, URLSchedule, "/", params.GetMerchantUid())
 
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := util.Call(auth.Client, token, url, util.GET)
+	res, err := util.Call(client, token, url, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -184,8 +159,8 @@ func GetScheduledPaymentByMerchantUID(auth *authenticate.Authenticate, params *s
 
 // GetScheduledPaymentByCustomerUID - GET /subscribe/payments/schedule/customers/{merchant_uid}
 // 예약한 결제 내역을 가져옵니다
-func GetScheduledPaymentByCustomerUID(auth *authenticate.Authenticate, params *subscribe.GetPaymentScheduleByCustomerRequest) (*subscribe.GetPaymentScheduleByCustomerResponse, error) {
-	urls := []string{auth.APIUrl, URLSubscribe, URLPayments, URLSchedule, URLCustomers, "/", params.GetCustomerUid()}
+func GetScheduledPaymentByCustomerUID(client *http.Client, apiDomain string, token string, params *subscribe.GetPaymentScheduleByCustomerRequest) (*subscribe.GetPaymentScheduleByCustomerResponse, error) {
+	urls := []string{apiDomain, URLSubscribe, URLPayments, URLSchedule, URLCustomers, "/", params.GetCustomerUid()}
 
 	isFirstQuery := true
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamPage, strconv.Itoa(int(params.GetPage()))}...)
@@ -193,12 +168,7 @@ func GetScheduledPaymentByCustomerUID(auth *authenticate.Authenticate, params *s
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamTo, strconv.Itoa(int(params.GetTo()))}...)
 	urlGetSchedule := strings.Join(urls, "")
 
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := util.Call(auth.Client, token, urlGetSchedule, util.GET)
+	res, err := util.Call(client, token, urlGetSchedule, util.GET)
 	if err != nil {
 		return nil, err
 	}

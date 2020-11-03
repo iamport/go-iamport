@@ -44,8 +44,12 @@ var TScheduleParams = &subscribe.PaymentScheduleParam{
 
 // 카드 정보 실제 값 입력시 테스트 가능
 func TestOneTime(t *testing.T) {
-
 	auth := authenticate.GetMockBingBongAuthenticate()
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &subscribe.OnetimePaymentRequest{
 		MerchantUid: TMerchantUID + util.GetRandomString(20), // require
@@ -69,7 +73,7 @@ func TestOneTime(t *testing.T) {
 		// NoticeUrl:              TodoCustomValue,
 	}
 
-	onetimeRes, err := Onetime(auth, params)
+	onetimeRes, err := Onetime(auth.Client, auth.APIUrl, token, params)
 	assert.Contains(t, onetimeRes.String(), "유효하지않은 카드번호를 입력하셨습니다.")
 	assert.NoError(t, err)
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
@@ -133,8 +137,12 @@ func checkOnetimePaymentParameter(t *testing.T, req *subscribe.OnetimePaymentReq
 
 // 카드 정보 실제 값 입력시 테스트 가능
 func TestSchedule(t *testing.T) {
-
 	auth := authenticate.GetMockBingBongAuthenticate()
+
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &subscribe.SchedulePayemntRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(20), // require
@@ -145,7 +153,7 @@ func TestSchedule(t *testing.T) {
 		Schedules:   []*subscribe.PaymentScheduleParam{TScheduleParams}, // require
 	}
 
-	scheduleRes, err := Schedule(auth, params)
+	scheduleRes, err := Schedule(auth.Client, auth.APIUrl, token, params)
 	assert.Contains(t, scheduleRes.String(), "유효하지않은 카드번호를 입력하셨습니다.")
 	assert.NoError(t, err)
 	//checkOnetimePaymentParameter(t, params, onetimeRes)
@@ -154,11 +162,16 @@ func TestSchedule(t *testing.T) {
 func TestUnschedule(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
 
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
 	params := &subscribe.UnschedulePaymentRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(20), // require
 	}
 
-	unscheduleRes, err := Unschedule(auth, params)
+	unscheduleRes, err := Unschedule(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(unscheduleRes.String())
 	assert.Contains(t, unscheduleRes.String(), "취소할 예약결제 기록이 존재하지 않습니다.")
 	assert.NoError(t, err)
@@ -167,23 +180,33 @@ func TestUnschedule(t *testing.T) {
 
 func TestGetScheduledPaymentByMerchantUID(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
 	params := &subscribe.GetPaymentScheduleRequest{
 		MerchantUid: TMerchantUID + util.GetRandomString(20), // require
 	}
-	res, err := GetScheduledPaymentByMerchantUID(auth, params)
+	res, err := GetScheduledPaymentByMerchantUID(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.Error(t, err)
 }
 
 func TestGetScheduledPaymentByCustomerUID(t *testing.T) {
 	auth := authenticate.GetMockBingBongAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
 	params := &subscribe.GetPaymentScheduleByCustomerRequest{
 		CustomerUid: TCustomerUid + util.GetRandomString(5),
 		Page:        1,
 		From:        int32(time.Now().Unix() - 100000),
 		To:          int32(time.Now().Unix()),
 	}
-	res, err := GetScheduledPaymentByCustomerUID(auth, params)
+	res, err := GetScheduledPaymentByCustomerUID(auth.Client, auth.APIUrl, token, params)
 	fmt.Println(res)
 	assert.NoError(t, err)
 }

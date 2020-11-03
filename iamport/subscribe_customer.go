@@ -18,11 +18,20 @@ func (iamport *Iamport) GetMultipleBillingKeysByCustomer(customerUIDs []string) 
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribeCust.GetMultipleCustomerBillingKeyRequest{
 		CustomerUid: customerUIDs,
 	}
 
-	res, err := subscribeCust.GetMultipleBillingKeysByCustomer(iamport.Authenticate, req)
+	res, err := subscribeCust.GetMultipleBillingKeysByCustomer(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -42,13 +51,22 @@ func (iamport *Iamport) DeleteBillingKey(customerUID, reason, requester string) 
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribeCust.DeleteCustomerBillingKeyRequest{
 		CustomerUid: customerUID,
 		Reason:      reason,
 		Requester:   requester,
 	}
 
-	res, err := subscribeCust.DeleteBillingKey(iamport.Authenticate, req)
+	res, err := subscribeCust.DeleteBillingKey(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -68,11 +86,20 @@ func (iamport *Iamport) GetBillingKeyByCustomer(customerUID string) (*TypeSubscr
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribeCust.GetCustomerBillingKeyRequest{
 		CustomerUid: customerUID,
 	}
 
-	res, err := subscribeCust.GetBillingKeyByCustomer(iamport.Authenticate, req)
+	res, err := subscribeCust.GetBillingKeyByCustomer(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -96,6 +123,11 @@ func (iamport *Iamport) InsertBillingKeyByCustomer(
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribeCust.InsertCustomerBillingKeyRequest{
 		CustomerUid:      customerUID,
 		Pg:               pg,
@@ -110,7 +142,11 @@ func (iamport *Iamport) InsertBillingKeyByCustomer(
 		CustomerPostcode: customerPostcode,
 	}
 
-	res, err := subscribeCust.InsertBillingKeyByCustomer(iamport.Authenticate, req)
+	res, err := subscribeCust.InsertBillingKeyByCustomer(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -130,12 +166,21 @@ func (iamport *Iamport) GetPaymentsByCustomer(customerUID string, page int32) (*
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribeCust.GetPaidByBillingKeyListRequest{
 		CustomerUid: customerUID,
 		Page:        page,
 	}
 
-	res, err := subscribeCust.GetPaymentsByCustomer(iamport.Authenticate, req)
+	res, err := subscribeCust.GetPaymentsByCustomer(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -162,6 +207,11 @@ func (iamport *Iamport) GetScheduledPaymentListByCustomerUID(customerUID string,
 		revisedPage = page
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.GetPaymentScheduleByCustomerRequest{
 		CustomerUid:    customerUID,
 		Page:           revisedPage,
@@ -170,7 +220,11 @@ func (iamport *Iamport) GetScheduledPaymentListByCustomerUID(customerUID string,
 		ScheduleStatus: scheduleStatus,
 	}
 
-	res, err := subscribeCust.GetScheduledPaymentByCustomerUID(iamport.Authenticate, req)
+	res, err := subscribeCust.GetScheduledPaymentByCustomerUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}

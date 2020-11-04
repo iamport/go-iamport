@@ -265,7 +265,7 @@ func Prepare(client *http.Client, apiDomain string, token string, params *paymen
 
 // GetPrepareByMerchantUID - GET /payments/prepare/{merchant_uid}
 // /payments/prepare로 이미 등록되어있는 사전등록 결제정보를 조회합니다
-func GetPrepareByMerchantUID(client *http.Client, apiDomain string, token string, params *payment.PaymentPrepareRequest) (*payment.PaymentPrepareResponse, error) {
+func GetPrepareByMerchantUID(client *http.Client, apiDomain string, token string, params *payment.PaymentGetPrepareRequest) (*payment.PaymentPrepareResponse, error) {
 	urls := []string{apiDomain, URLPayments, URLPrepare, "/", params.GetMerchantUid()}
 	urlPrepare := strings.Join(urls, "")
 

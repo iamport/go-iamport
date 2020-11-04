@@ -369,11 +369,11 @@ func TestPrepare(t *testing.T) {
 	assert.Equal(t, merchantUID, res.Response.MerchantUid)
 	assert.Equal(t, amount, int(res.Response.Amount))
 
-	params = &payment.PaymentPrepareRequest{
+	params2 := &payment.PaymentGetPrepareRequest{
 		MerchantUid: merchantUID,
 	}
 
-	res, err = GetPrepareByMerchantUID(auth.Client, auth.APIUrl, token, params)
+	res, err = GetPrepareByMerchantUID(auth.Client, auth.APIUrl, token, params2)
 	assert.NoError(t, err)
 	assert.Equal(t, merchantUID, res.Response.MerchantUid)
 	assert.Equal(t, amount, int(res.Response.Amount))

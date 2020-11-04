@@ -24,11 +24,16 @@ const (
 func TestGetByImpUID(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
 
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
+
 	params := &payment.PaymentRequest{
 		ImpUid: ImpUID785510843101,
 	}
 
-	payment, err := GetByImpUID(auth, params)
+	payment, err := GetByImpUID(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	checkPaymentImp375245484897(t, payment.Response)
@@ -36,12 +41,16 @@ func TestGetByImpUID(t *testing.T) {
 
 func TestGetByImpUIDs(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsRequest{
 		ImpUid: []string{ImpUID785510843101, ImpUID338103167934},
 	}
 
-	payments, err := GetByImpUIDs(auth, params)
+	payments, err := GetByImpUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 2, len(payments.Response))
@@ -51,12 +60,16 @@ func TestGetByImpUIDs(t *testing.T) {
 
 func TestGetByMerchantUID(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 	}
 
-	payment, err := GetByMerchantUID(auth, params)
+	payment, err := GetByMerchantUID(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	checkPaymentImp375245484897(t, payment.Response)
@@ -64,13 +77,17 @@ func TestGetByMerchantUID(t *testing.T) {
 
 func TestGetByMerchantUIDWithCorrectStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Status:      "paid",
 	}
 
-	payment, err := GetByMerchantUID(auth, params)
+	payment, err := GetByMerchantUID(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	assert.NotNil(t, payment)
@@ -78,25 +95,33 @@ func TestGetByMerchantUIDWithCorrectStatus(t *testing.T) {
 
 func TestGetByMerchantUIDWithIncorrectStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Status:      "123",
 	}
 
-	payment, err := GetByMerchantUID(auth, params)
+	payment, err := GetByMerchantUID(auth.Client, auth.APIUrl, token, params)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
 
 func TestGetByMerchantUIDs(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	checkPaymentImp375245484897(t, payment.Response.List[0])
@@ -104,13 +129,17 @@ func TestGetByMerchantUIDs(t *testing.T) {
 
 func TestGetByMerchantUIDsWithCorrectStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Status:      "paid",
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 
 	checkPaymentImp375245484897(t, payment.Response.List[0])
@@ -118,45 +147,61 @@ func TestGetByMerchantUIDsWithCorrectStatus(t *testing.T) {
 
 func TestGetByMerchantUIDsWithInorrectStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Status:      "123",
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
 
 func TestGetByMerchantUIDsWithCorrectPage(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Page:        int32(1),
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithIncorrectPage(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
 		Page:        int32(2),
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.Error(t, err)
 	assert.Nil(t, payment)
 }
 
 func TestGetByMerchantUIDsWithStatusAndPage(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
@@ -164,13 +209,17 @@ func TestGetByMerchantUIDsWithStatusAndPage(t *testing.T) {
 		Page:        int32(1),
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByMerchantUIDsWithStatusAndPageAndSorting(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentsMerchantUidRequest{
 		MerchantUid: MerchantUIDORD20180131_0009728,
@@ -179,45 +228,57 @@ func TestGetByMerchantUIDsWithStatusAndPageAndSorting(t *testing.T) {
 		Sorting:     "paid",
 	}
 
-	payment, err := GetByMerchantUIDs(auth, params)
+	payment, err := GetByMerchantUIDs(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	checkPaymentImp375245484897(t, payment.Response.List[0])
 }
 
 func TestGetByStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentStatusRequest{
 		Status: "all",
 	}
 
-	payment, err := GetByStatus(auth, params)
+	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	assert.Equal(t, 9, len(payment.Response.List))
 }
 
 func TestGetByStatusWithLimit(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentStatusRequest{
 		Status: "all",
 		Limit:  10,
 	}
 
-	payment, err := GetByStatus(auth, params)
+	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	assert.Equal(t, 9, len(payment.Response.List))
 }
 
 func TestGetByStatusWithSpecificStatus(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentStatusRequest{
 		Status: "paid",
 		Limit:  10,
 	}
 
-	payment, err := GetByStatus(auth, params)
+	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	for _, pay := range payment.Response.GetList() {
 		assert.Equal(t, "paid", pay.Status)
@@ -226,6 +287,10 @@ func TestGetByStatusWithSpecificStatus(t *testing.T) {
 
 func TestGetByStatusWithDate(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentStatusRequest{
 		Status: "paid",
@@ -234,7 +299,7 @@ func TestGetByStatusWithDate(t *testing.T) {
 		To:     int32(time.Date(2020, 9, 2, 0, 0, 0, 0, time.UTC).Unix()),
 	}
 
-	payment, err := GetByStatus(auth, params)
+	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	for _, pay := range payment.Response.GetList() {
 		assert.True(t, time.Unix(int64(pay.PaidAt), 0).Before(time.Date(2020, 9, 2, 0, 0, 0, 0, time.UTC)))
@@ -244,6 +309,10 @@ func TestGetByStatusWithDate(t *testing.T) {
 
 func TestGetByStatusWithSortPaidTime(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentStatusRequest{
 		Status:  "paid",
@@ -253,7 +322,7 @@ func TestGetByStatusWithSortPaidTime(t *testing.T) {
 		To:      int32(time.Date(2020, 9, 2, 0, 0, 0, 0, time.UTC).Unix()),
 	}
 
-	payment, err := GetByStatus(auth, params)
+	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	paidTime := time.Now()
 	for _, pay := range payment.Response.GetList() {
@@ -266,18 +335,26 @@ func TestGetByStatusWithSortPaidTime(t *testing.T) {
 // TODO 테스트 데이터 필요 (KCP or Payco)
 func xTestGetBalanceByImpUID(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	params := &payment.PaymentBalanceRequest{
 		ImpUid: "imp_088621754304",
 	}
 
-	payment, err := GetBalanceByImpUID(auth, params)
+	payment, err := GetBalanceByImpUID(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	assert.Equal(t, 123, payment.Response.Amount)
 }
 
 func TestPrepare(t *testing.T) {
 	auth := authenticate.GetMockBaseAuthenticate()
+	token, err := auth.GetToken()
+	if err != nil {
+		t.Error(err)
+	}
 
 	merchantUID := util.GetRandomString(20)
 	amount := rand.Intn(10000)
@@ -287,7 +364,7 @@ func TestPrepare(t *testing.T) {
 		Amount:      float64(amount),
 	}
 
-	res, err := Prepare(auth, params)
+	res, err := Prepare(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	assert.Equal(t, merchantUID, res.Response.MerchantUid)
 	assert.Equal(t, amount, int(res.Response.Amount))
@@ -296,7 +373,7 @@ func TestPrepare(t *testing.T) {
 		MerchantUid: merchantUID,
 	}
 
-	res, err = GetPrepareByMerchantUID(auth, params)
+	res, err = GetPrepareByMerchantUID(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
 	assert.Equal(t, merchantUID, res.Response.MerchantUid)
 	assert.Equal(t, amount, int(res.Response.Amount))

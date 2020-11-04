@@ -31,6 +31,11 @@ func (iamport *Iamport) OnetimePayment(
 		return nil, errors.New(ErrInvalidAmount)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.OnetimePaymentRequest{
 		MerchantUid:            merchantUID,
 		Amount:                 amount,
@@ -53,7 +58,11 @@ func (iamport *Iamport) OnetimePayment(
 		NoticeUrl:              noticeUrl,
 	}
 
-	res, err := subscribe.Onetime(iamport.Authenticate, req)
+	res, err := subscribe.Onetime(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +94,11 @@ func (iamport *Iamport) AgainPayment(
 		return nil, errors.New(ErrInvalidAmount)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.AgainPaymentRequest{
 		CustomerUid:            customerUID,
 		MerchantUid:            merchantUID,
@@ -102,7 +116,10 @@ func (iamport *Iamport) AgainPayment(
 		NoticeUrl:              noticeUrl,
 	}
 
-	res, err := subscribe.Again(iamport.Authenticate, req)
+	res, err := subscribe.Again(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -127,6 +144,11 @@ func (iamport *Iamport) SchedulePayment(
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.SchedulePayemntRequest{
 		CustomerUid:    customerUID,
 		CheckingAmount: checkingAmount,
@@ -138,7 +160,11 @@ func (iamport *Iamport) SchedulePayment(
 		Schedules:      schedules,
 	}
 
-	res, err := subscribe.Schedule(iamport.Authenticate, req)
+	res, err := subscribe.Schedule(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -158,12 +184,20 @@ func (iamport *Iamport) UnschedulePayment(customerUID string, merchantUID []stri
 		return nil, errors.New(ErrMustExistCustomerUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.UnschedulePaymentRequest{
 		CustomerUid: customerUID,
 		MerchantUid: merchantUID,
 	}
 
-	res, err := subscribe.Unschedule(iamport.Authenticate, req)
+	res, err := subscribe.Unschedule(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -183,11 +217,20 @@ func (iamport *Iamport) GetScheduledPaymentByMerchantUID(merchantUID string) (*T
 		return nil, errors.New(ErrMustExistMerchantUID)
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.GetPaymentScheduleRequest{
 		MerchantUid: merchantUID,
 	}
 
-	res, err := subscribe.GetScheduledPaymentByMerchantUID(iamport.Authenticate, req)
+	res, err := subscribe.GetScheduledPaymentByMerchantUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -216,6 +259,11 @@ func (iamport *Iamport) GetScheduledPaymentByCustomerUID(
 		revisedPage = page
 	}
 
+	token, err := iamport.Authenticate.GetToken()
+	if err != nil {
+		return nil, err
+	}
+
 	req := &TypeSubscribe.GetPaymentScheduleByCustomerRequest{
 		CustomerUid:    customerUID,
 		Page:           revisedPage,
@@ -224,7 +272,10 @@ func (iamport *Iamport) GetScheduledPaymentByCustomerUID(
 		ScheduleStatus: scheduleStatus,
 	}
 
-	res, err := subscribe.GetScheduledPaymentByCustomerUID(iamport.Authenticate, req)
+	res, err := subscribe.GetScheduledPaymentByCustomerUID(
+		iamport.Authenticate.Client, iamport.Authenticate.APIUrl,
+		token, req,
+	)
 	if err != nil {
 		return nil, err
 	}

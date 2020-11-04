@@ -1,6 +1,7 @@
 package subscribe_customer
 
 import (
+	"net/http"
 	urllib "net/url"
 	"strconv"
 	"strings"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/iamport/go-iamport/util"
 
-	"github.com/iamport/go-iamport/authenticate"
 	subscribe_dup "github.com/iamport/interface/gen_src/go/v1/subscribe"
 	subscribe "github.com/iamport/interface/gen_src/go/v1/subscribe_customers"
 )
@@ -31,13 +31,8 @@ const (
 
 // GetMultipleBillingKeysByCustomer - GET /subscribe/customers
 // 여러 빌링키를 한 번에 조회하는 API
-func GetMultipleBillingKeysByCustomer(auth *authenticate.Authenticate, params *subscribe.GetMultipleCustomerBillingKeyRequest) (*subscribe.GetMultipleCustomerBillingKeyResponse, error) {
-	urls := []string{auth.APIUrl, URLSubscribe, URLCustomers}
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func GetMultipleBillingKeysByCustomer(client *http.Client, apiDomain string, token string, params *subscribe.GetMultipleCustomerBillingKeyRequest) (*subscribe.GetMultipleCustomerBillingKeyResponse, error) {
+	urls := []string{apiDomain, URLSubscribe, URLCustomers}
 
 	isFirstQuery := true
 	for _, customerUID := range params.GetCustomerUid() {
@@ -45,7 +40,7 @@ func GetMultipleBillingKeysByCustomer(auth *authenticate.Authenticate, params *s
 	}
 	urlGetBillingkeys := strings.Join(urls, "")
 
-	res, err := util.Call(auth.Client, token, urlGetBillingkeys, util.GET)
+	res, err := util.Call(client, token, urlGetBillingkeys, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -61,20 +56,15 @@ func GetMultipleBillingKeysByCustomer(auth *authenticate.Authenticate, params *s
 
 // DeleteBillingKey - DELETE /subscribe/customers/{customer_uid}
 // 해당 빌링키 삭제
-func DeleteBillingKey(auth *authenticate.Authenticate, params *subscribe.DeleteCustomerBillingKeyRequest) (*subscribe.DeleteCustomerBillingKeyResponse, error) {
-	urls := []string{auth.APIUrl, URLSubscribe, URLCustomers, "/", params.GetCustomerUid()}
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func DeleteBillingKey(client *http.Client, apiDomain string, token string, params *subscribe.DeleteCustomerBillingKeyRequest) (*subscribe.DeleteCustomerBillingKeyResponse, error) {
+	urls := []string{apiDomain, URLSubscribe, URLCustomers, "/", params.GetCustomerUid()}
 
 	isFirstQuery := true
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamReason, urllib.PathEscape(params.GetReason())}...)
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamRequester, urllib.PathEscape(params.GetRequester())}...)
 	urlDeleleBillingkey := strings.Join(urls, "")
 
-	res, err := util.Call(auth.Client, token, urlDeleleBillingkey, util.DELETE)
+	res, err := util.Call(client, token, urlDeleleBillingkey, util.DELETE)
 	if err != nil {
 		return nil, err
 	}
@@ -90,15 +80,10 @@ func DeleteBillingKey(auth *authenticate.Authenticate, params *subscribe.DeleteC
 
 // GetBillingKeyByCustomer - GET /subscribe/customers/{customer_uid}
 // 구매자 빌링키 조회하는 API
-func GetBillingKeyByCustomer(auth *authenticate.Authenticate, params *subscribe.GetCustomerBillingKeyRequest) (*subscribe.GetCustomerBillingKeyResponse, error) {
-	urls := util.GetJoinString(auth.APIUrl, URLSubscribe, URLCustomers, "/", params.GetCustomerUid())
+func GetBillingKeyByCustomer(client *http.Client, apiDomain string, token string, params *subscribe.GetCustomerBillingKeyRequest) (*subscribe.GetCustomerBillingKeyResponse, error) {
+	urls := util.GetJoinString(apiDomain, URLSubscribe, URLCustomers, "/", params.GetCustomerUid())
 
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := util.Call(auth.Client, token, urls, util.GET)
+	res, err := util.Call(client, token, urls, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -114,13 +99,8 @@ func GetBillingKeyByCustomer(auth *authenticate.Authenticate, params *subscribe.
 
 // InsertBillingKeyByCustomer - POST /subscribe/customers/{customer_uid}
 // 구매자 빌링키 입력하는 API
-func InsertBillingKeyByCustomer(auth *authenticate.Authenticate, params *subscribe.InsertCustomerBillingKeyRequest) (*subscribe.InsertCustomerBillingKeyResponse, error) {
-	urls := util.GetJoinString(auth.APIUrl, URLSubscribe, URLCustomers, "/", params.GetCustomerUid())
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func InsertBillingKeyByCustomer(client *http.Client, apiDomain string, token string, params *subscribe.InsertCustomerBillingKeyRequest) (*subscribe.InsertCustomerBillingKeyResponse, error) {
+	urls := util.GetJoinString(apiDomain, URLSubscribe, URLCustomers, "/", params.GetCustomerUid())
 
 	marshaler := protojson.MarshalOptions{
 		UseProtoNames: true,
@@ -130,7 +110,7 @@ func InsertBillingKeyByCustomer(auth *authenticate.Authenticate, params *subscri
 		return nil, err
 	}
 
-	res, err := util.CallWithJson(auth.Client, token, urls, util.POST, jsonBytes)
+	res, err := util.CallWithJson(client, token, urls, util.POST, jsonBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -146,19 +126,14 @@ func InsertBillingKeyByCustomer(auth *authenticate.Authenticate, params *subscri
 
 // GetPaymentsByCustomer - GET /subscribe/customers/{customer_uid}/payments
 // 여러 빌링키를 한 번에 조회하는 API
-func GetPaymentsByCustomer(auth *authenticate.Authenticate, params *subscribe.GetPaidByBillingKeyListRequest) (*subscribe.GetPaidByBillingKeyListResponse, error) {
-	urls := []string{auth.APIUrl, URLSubscribe, URLCustomers, "/", params.GetCustomerUid(), URLPayments}
-
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
+func GetPaymentsByCustomer(client *http.Client, apiDomain string, token string, params *subscribe.GetPaidByBillingKeyListRequest) (*subscribe.GetPaidByBillingKeyListResponse, error) {
+	urls := []string{apiDomain, URLSubscribe, URLCustomers, "/", params.GetCustomerUid(), URLPayments}
 
 	isFirstQuery := true
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamPage, strconv.Itoa(int(params.GetPage()))}...)
 	urlGetBillingkeys := strings.Join(urls, "")
 
-	res, err := util.Call(auth.Client, token, urlGetBillingkeys, util.GET)
+	res, err := util.Call(client, token, urlGetBillingkeys, util.GET)
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +149,8 @@ func GetPaymentsByCustomer(auth *authenticate.Authenticate, params *subscribe.Ge
 
 // GetScheduledPaymentByCustomerUID - GET /subscribe/customers/{customer_uid}/schedules
 // 예약한 결제 내역을 가져옵니다
-func GetScheduledPaymentByCustomerUID(auth *authenticate.Authenticate, params *subscribe_dup.GetPaymentScheduleByCustomerRequest) (*subscribe_dup.GetPaymentScheduleByCustomerResponse, error) {
-	urls := []string{auth.APIUrl, URLSubscribe, URLCustomers, "/", params.GetCustomerUid(), URLSchedules}
+func GetScheduledPaymentByCustomerUID(client *http.Client, apiDomain string, token string, params *subscribe_dup.GetPaymentScheduleByCustomerRequest) (*subscribe_dup.GetPaymentScheduleByCustomerResponse, error) {
+	urls := []string{apiDomain, URLSubscribe, URLCustomers, "/", params.GetCustomerUid(), URLSchedules}
 
 	isFirstQuery := true
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamPage, strconv.Itoa(int(params.GetPage()))}...)
@@ -184,12 +159,7 @@ func GetScheduledPaymentByCustomerUID(auth *authenticate.Authenticate, params *s
 	urls = append(urls, []string{util.GetQueryPrefix(&isFirstQuery), URLParamScheduleStatus, params.GetScheduleStatus()}...)
 	urlGetSchedule := strings.Join(urls, "")
 
-	token, err := auth.GetToken()
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := util.Call(auth.Client, token, urlGetSchedule, util.GET)
+	res, err := util.Call(client, token, urlGetSchedule, util.GET)
 	if err != nil {
 		return nil, err
 	}

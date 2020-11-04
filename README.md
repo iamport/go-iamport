@@ -7,26 +7,33 @@ https://api.iamport.kr
 
 ## 설치
 
-    $ go get github.com/iamport/go-iamport
+```bash
+$ go get github.com/iamport/go-iamport
+```
 
 ## 테스트
 
-    $ go test ./... -v
+```bash
+$ go test ./... -v
+```
 
 ## 예제
-    iam, err := iamport.NewIamport("https://api.iamport.kr", "<your_api_key>", "<your_api_secret>")
-    if err != nil {
-      return err
-    }
 
-    pay, err := iam.GetPaymentImpUID("<some imp_uid>")
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
+```go
+iam, err := iamport.NewIamport("https://api.iamport.kr", "<your_api_key>", "<your_api_secret>")
+if err != nil {
+  return err
+}
 
-    fmt.Println(pay.Amount)
-    fmt.Println(pay.MerchantUID)
+pay, err := iam.GetPaymentImpUID("<some imp_uid>")
+if err != nil {
+  fmt.Println(err)
+  return
+}
+
+fmt.Println(pay.Amount)
+fmt.Println(pay.MerchantUID)
+```
 
 ## 구현되어있는 기능 - https://api.iamport.kr
 

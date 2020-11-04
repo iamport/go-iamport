@@ -348,7 +348,7 @@ func (iamport *Iamport) GetPreparePayment(merchantUID string) (*TypePayment.Prep
 		return nil, err
 	}
 
-	req := &TypePayment.PaymentPrepareRequest{
+	req := &TypePayment.PaymentGetPrepareRequest{
 		MerchantUid: merchantUID,
 	}
 

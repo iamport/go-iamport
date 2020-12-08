@@ -242,11 +242,12 @@ func TestGetByStatus(t *testing.T) {
 
 	params := &payment.PaymentStatusRequest{
 		Status: "all",
+		Limit:  10,
 	}
 
 	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
 	assert.NoError(t, err)
-	assert.Equal(t, 9, len(payment.Response.List))
+	assert.Equal(t, 10, len(payment.Response.List))
 }
 
 func TestGetByStatusWithLimit(t *testing.T) {
@@ -258,7 +259,7 @@ func TestGetByStatusWithLimit(t *testing.T) {
 
 	params := &payment.PaymentStatusRequest{
 		Status: "all",
-		Limit:  10,
+		Limit:  9,
 	}
 
 	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)
@@ -275,7 +276,7 @@ func TestGetByStatusWithSpecificStatus(t *testing.T) {
 
 	params := &payment.PaymentStatusRequest{
 		Status: "paid",
-		Limit:  10,
+		Limit:  9,
 	}
 
 	payment, err := GetByStatus(auth.Client, auth.APIUrl, token, params)

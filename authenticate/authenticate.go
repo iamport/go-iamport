@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/iamport/interface/gen_src/go/v1/authenticate"
 	"github.com/iamport/go-iamport/util"
+	"github.com/iamport/interface/gen_src/go/v1/authenticate"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -67,7 +67,7 @@ func NewAuthenticate(apiURL string, cli *http.Client, restAPIKey string, restAPI
 func (a *Authenticate) GetToken() (string, error) {
 	now := time.Now()
 
-	if a.Token == "" || a.Expired.IsZero() || !a.Expired.Before(now) {
+	if a.Token == "" || a.Expired.IsZero() || a.Expired.Before(now) {
 		err := a.RequestToken()
 		if err != nil {
 			return "", nil

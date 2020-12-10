@@ -48,7 +48,7 @@ func TestInsertBillingKeyByCustomer(t *testing.T) {
 		TBuyerName, TBuyerTel, TBuyerEmail, "", "",
 	)
 	assert.Nil(t, res)
-	assert.Contains(t, err.Error(), "유효하지않은 카드번호를 입력하셨습니다.")
+	assert.Error(t, err)
 }
 
 func TestGetPaymentsByCustomer(t *testing.T) {

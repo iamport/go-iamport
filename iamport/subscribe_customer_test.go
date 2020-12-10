@@ -48,7 +48,7 @@ func TestInsertBillingKeyByCustomer(t *testing.T) {
 		TBuyerName, TBuyerTel, TBuyerEmail, "", "",
 	)
 	assert.Nil(t, res)
-	assert.Contains(t, err.Error(), "카드번호")
+	assert.Error(t, err)
 }
 
 func TestGetPaymentsByCustomer(t *testing.T) {
